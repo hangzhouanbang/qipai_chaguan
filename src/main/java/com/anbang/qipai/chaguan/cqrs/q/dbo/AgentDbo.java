@@ -1,5 +1,11 @@
 package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
+/**
+ * 馆主
+ * 
+ * @author lsc
+ *
+ */
 public class AgentDbo {
 	private String id;// 推广员id
 	private String nickname;// 推广员昵称

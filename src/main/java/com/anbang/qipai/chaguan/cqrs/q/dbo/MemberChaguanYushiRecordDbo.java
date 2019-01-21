@@ -2,6 +2,12 @@ package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
 import com.dml.accounting.AccountingSummary;
 
+/**
+ * 玩家茶馆玉石流水
+ * 
+ * @author lsc
+ *
+ */
 public class MemberChaguanYushiRecordDbo {
 
 	private String id;

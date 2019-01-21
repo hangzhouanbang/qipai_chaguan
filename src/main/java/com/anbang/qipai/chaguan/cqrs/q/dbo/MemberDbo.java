@@ -1,5 +1,11 @@
 package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
+/**
+ * 玩家
+ * 
+ * @author lsc
+ *
+ */
 public class MemberDbo {
 	private String id;// 会员id
 	private String nickname;// 会员昵称

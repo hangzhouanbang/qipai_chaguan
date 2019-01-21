@@ -1,5 +1,11 @@
 package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
+/**
+ * 玩家加入的茶馆
+ * 
+ * @author lsc
+ *
+ */
 public class MemberChaguanDbo {
 
 	private String id;

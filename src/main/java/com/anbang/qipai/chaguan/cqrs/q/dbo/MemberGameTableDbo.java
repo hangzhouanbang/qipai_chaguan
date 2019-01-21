@@ -1,20 +1,15 @@
 package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
 /**
- * 玩家茶馆玉石账户
+ * 玩家游戏桌子
  * 
  * @author lsc
  *
  */
-public class MemberChaguanYushiAccountDbo {
-
+public class MemberGameTableDbo {
 	private String id;
-
 	private String memberId;// 玩家id
-
-	private String agentId;// 馆主id
-
-	private int balance;// 余额
+	private GameTableDbo table;// 游戏桌子
 
 	public String getId() {
 		return id;
@@ -32,19 +27,12 @@ public class MemberChaguanYushiAccountDbo {
 		this.memberId = memberId;
 	}
 
-	public String getAgentId() {
-		return agentId;
+	public GameTableDbo getTable() {
+		return table;
 	}
 
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
+	public void setTable(GameTableDbo table) {
+		this.table = table;
 	}
 
-	public int getBalance() {
-		return balance;
-	}
-
-	public void setBalance(int balance) {
-		this.balance = balance;
-	}
 }
