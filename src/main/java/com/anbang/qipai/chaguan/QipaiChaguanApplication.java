@@ -2,6 +2,7 @@ package com.anbang.qipai.chaguan;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -59,8 +60,13 @@ public class QipaiChaguanApplication {
 
 	}
 
-	@Bean
-	public UserSessionsManager userSessionsManager() {
+	@Bean(autowire = Autowire.BY_NAME, value = "memberSessionsManager")
+	public UserSessionsManager memberSessionsManager() {
+		return new UserSessionsManager();
+	}
+
+	@Bean(autowire = Autowire.BY_NAME, value = "agentSessionsManager")
+	public UserSessionsManager agentSessionsManager() {
 		return new UserSessionsManager();
 	}
 

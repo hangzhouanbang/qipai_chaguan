@@ -1,5 +1,7 @@
 package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
+import com.anbang.qipai.chaguan.plan.bean.AgentType;
+
 /**
  * 馆主
  * 
@@ -11,6 +13,8 @@ public class AgentDbo {
 	private String nickname;// 推广员昵称
 	private String gender;// 推广员性别:男:male,女:female
 	private String headimgurl;// 头像url
+	private AgentType agentType;// 推广员类型
+	private int inviteMemberNum;// 邀请玩家数量
 
 	public String getId() {
 		return id;
@@ -44,4 +48,19 @@ public class AgentDbo {
 		this.headimgurl = headimgurl;
 	}
 
+	public AgentType getAgentType() {
+		return agentType;
+	}
+
+	public void setAgentType(AgentType agentType) {
+		this.agentType = agentType;
+	}
+
+	public int getInviteMemberNum() {
+		return inviteMemberNum;
+	}
+
+	public void setInviteMemberNum(int inviteMemberNum) {
+		this.inviteMemberNum = inviteMemberNum;
+	}
 }

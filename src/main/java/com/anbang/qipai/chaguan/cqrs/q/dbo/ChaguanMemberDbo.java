@@ -12,6 +12,8 @@ public class ChaguanMemberDbo {
 	private String headimgurl;// 玩家头像
 	private String memberNickname;// 玩家昵称
 	private String chaguanId;// 茶馆id
+	private String chaguanName;// 茶馆名称
+	private String chaguanDesc;// 茶馆描述
 	private String agentId;// 馆主id
 	private String onlineStatus;// 在线状态
 	private int chaguanYushi;// 茶馆玉石
@@ -56,6 +58,22 @@ public class ChaguanMemberDbo {
 
 	public void setChaguanId(String chaguanId) {
 		this.chaguanId = chaguanId;
+	}
+
+	public String getChaguanName() {
+		return chaguanName;
+	}
+
+	public void setChaguanName(String chaguanName) {
+		this.chaguanName = chaguanName;
+	}
+
+	public String getChaguanDesc() {
+		return chaguanDesc;
+	}
+
+	public void setChaguanDesc(String chaguanDesc) {
+		this.chaguanDesc = chaguanDesc;
 	}
 
 	public String getAgentId() {

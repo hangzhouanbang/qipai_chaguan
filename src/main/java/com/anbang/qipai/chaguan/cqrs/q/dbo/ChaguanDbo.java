@@ -11,6 +11,7 @@ public class ChaguanDbo {
 	private String agentId;// 馆主id
 	private String name;// 茶馆名称
 	private String desc;// 茶馆描述
+	private int memberNum;// 玩家人数
 	private String status;// 茶馆状态
 
 	public String getId() {
@@ -43,6 +44,14 @@ public class ChaguanDbo {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
+	}
+
+	public int getMemberNum() {
+		return memberNum;
+	}
+
+	public void setMemberNum(int memberNum) {
+		this.memberNum = memberNum;
 	}
 
 	public String getStatus() {
