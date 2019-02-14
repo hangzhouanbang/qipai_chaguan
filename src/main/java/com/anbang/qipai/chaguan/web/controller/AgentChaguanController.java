@@ -5,8 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anbang.qipai.chaguan.conf.ChaguanApplyStatus;
+import com.anbang.qipai.chaguan.conf.ChaguanStatus;
+import com.anbang.qipai.chaguan.cqrs.c.service.ChaguanCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.plan.service.ChaguanApplyService;
@@ -24,6 +28,12 @@ public class AgentChaguanController {
 
 	@Autowired
 	private AgentDboService agentDboService;
+
+	@Autowired
+	private ChaguanDboService chaguanDboService;
+
+	@Autowired
+	private ChaguanCmdService chaguanCmdService;
 
 	/**
 	 * 推广员申请开通茶馆
@@ -67,6 +77,47 @@ public class AgentChaguanController {
 	public CommonVO applychaguan_refuse(String applyId) {
 		CommonVO vo = new CommonVO();
 		chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.FAIL);
+		return vo;
+	}
+
+	/**
+	 * 创建茶馆
+	 */
+	@RequestMapping("/chaguan_create")
+	public CommonVO chaguan_create(String token, String name, String desc) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		AgentDbo agent = agentDboService.findAgentDboByAgentId(agentId);
+		String newChaguanId = chaguanCmdService.createNewChaguanId(System.currentTimeMillis());
+		ChaguanDbo dbo = new ChaguanDbo();
+		dbo.setId(newChaguanId);
+		dbo.setAgentId(agentId);
+		dbo.setNickname(agent.getNickname());
+		dbo.setHeadimgurl(agent.getHeadimgurl());
+		dbo.setName(name);
+		dbo.setDesc(desc);
+		dbo.setMemberNum(0);
+		dbo.setStatus(ChaguanStatus.NORMAL);
+		chaguanDboService.addChaguanDbo(dbo);
+		return vo;
+	}
+
+	/**
+	 * 修改茶馆基本信息
+	 */
+	@RequestMapping("/chaguan_update")
+	public CommonVO chaguan_update(String token, String chaguanId, String name, String desc) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
 		return vo;
 	}
 }

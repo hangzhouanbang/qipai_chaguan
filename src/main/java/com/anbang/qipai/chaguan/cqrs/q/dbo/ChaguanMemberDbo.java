@@ -15,6 +15,8 @@ public class ChaguanMemberDbo {
 	private String chaguanName;// 茶馆名称
 	private String chaguanDesc;// 茶馆描述
 	private String agentId;// 馆主id
+	private String agentNickname;// 推广员昵称
+	private String agentHeadimgurl;// 推广员头像url
 	private String onlineStatus;// 在线状态
 	private int chaguanYushi;// 茶馆玉石
 	private String payType;// 支付方式
@@ -82,6 +84,22 @@ public class ChaguanMemberDbo {
 
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
+	}
+
+	public String getAgentNickname() {
+		return agentNickname;
+	}
+
+	public void setAgentNickname(String agentNickname) {
+		this.agentNickname = agentNickname;
+	}
+
+	public String getAgentHeadimgurl() {
+		return agentHeadimgurl;
+	}
+
+	public void setAgentHeadimgurl(String agentHeadimgurl) {
+		this.agentHeadimgurl = agentHeadimgurl;
 	}
 
 	public String getOnlineStatus() {

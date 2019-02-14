@@ -9,6 +9,8 @@ package com.anbang.qipai.chaguan.cqrs.q.dbo;
 public class ChaguanDbo {
 	private String id;// 茶馆id
 	private String agentId;// 馆主id
+	private String nickname;// 推广员昵称
+	private String headimgurl;// 头像url
 	private String name;// 茶馆名称
 	private String desc;// 茶馆描述
 	private int memberNum;// 玩家人数
@@ -28,6 +30,22 @@ public class ChaguanDbo {
 
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getHeadimgurl() {
+		return headimgurl;
+	}
+
+	public void setHeadimgurl(String headimgurl) {
+		this.headimgurl = headimgurl;
 	}
 
 	public String getName() {
