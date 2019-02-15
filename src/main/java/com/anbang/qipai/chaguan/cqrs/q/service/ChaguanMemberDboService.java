@@ -19,9 +19,23 @@ public class ChaguanMemberDboService {
 		chaguanMemberDboDao.add(dbo);
 	}
 
-	public ListPage findByMemberId(int page, int size, String memberId) {
+	public long countOnlineMemberByChaguanId(String chaguanId) {
+		return chaguanMemberDboDao.countOnlineMemberByChaguanId(chaguanId);
+	}
+
+	public ListPage findChaguanMemberDboByMemberId(int page, int size, String memberId) {
 		long amount = chaguanMemberDboDao.getAmountByMemberId(memberId);
-		List<ChaguanMemberDbo> chaguanList = chaguanMemberDboDao.findByMemberId(memberId);
+		List<ChaguanMemberDbo> chaguanList = chaguanMemberDboDao.findByMemberId(page, size, memberId);
 		return new ListPage(chaguanList, page, size, (int) amount);
+	}
+
+	public ListPage findChaguanMemberDboByChaguanId(int page, int size, String chaguanId) {
+		long amount = chaguanMemberDboDao.countAmountByChaguanId(chaguanId);
+		List<ChaguanMemberDbo> chaguanList = chaguanMemberDboDao.findByChaguanId(page, size, chaguanId);
+		return new ListPage(chaguanList, page, size, (int) amount);
+	}
+
+	public void updateChaguanMemberDboRemoveByMemberId(String memberId, boolean remove) {
+		chaguanMemberDboDao.updateChaguanMemberDboRemoveByMemberId(memberId, remove);
 	}
 }

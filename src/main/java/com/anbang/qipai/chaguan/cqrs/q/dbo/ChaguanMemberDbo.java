@@ -21,6 +21,7 @@ public class ChaguanMemberDbo {
 	private int chaguanYushi;// 茶馆玉石
 	private String payType;// 支付方式
 	private long joinTime;// 加入时间
+	private boolean remove;// 成员是否被移出茶馆
 
 	public String getId() {
 		return id;
@@ -132,6 +133,14 @@ public class ChaguanMemberDbo {
 
 	public void setJoinTime(long joinTime) {
 		this.joinTime = joinTime;
+	}
+
+	public boolean isRemove() {
+		return remove;
+	}
+
+	public void setRemove(boolean remove) {
+		this.remove = remove;
 	}
 
 }

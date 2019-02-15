@@ -8,9 +8,15 @@ public interface ChaguanMemberDboDao {
 
 	void add(ChaguanMemberDbo dbo);
 
+	long countOnlineMemberByChaguanId(String chaguanId);
+
 	long countAmountByChaguanId(String chaguanId);
+
+	List<ChaguanMemberDbo> findByChaguanId(int page, int size, String chaguanId);
 
 	long getAmountByMemberId(String memberId);
 
-	List<ChaguanMemberDbo> findByMemberId(String memberId);
+	List<ChaguanMemberDbo> findByMemberId(int page, int size, String memberId);
+
+	void updateChaguanMemberDboRemoveByMemberId(String memberId, boolean remove);
 }
