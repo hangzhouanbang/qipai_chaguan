@@ -3,7 +3,7 @@ package com.anbang.qipai.chaguan.cqrs.q.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateChaguanYushiAccountResult;
+import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateMemberChaguanYushiAccountResult;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiAccountDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiRecordDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
@@ -22,7 +22,7 @@ public class MemberChaguanYushiService {
 	/**
 	 * 创建茶馆玉石账户
 	 */
-	public MemberChaguanYushiAccountDbo createYushiAccountForNewMember(CreateChaguanYushiAccountResult result) {
+	public MemberChaguanYushiAccountDbo createYushiAccountForNewMember(CreateMemberChaguanYushiAccountResult result) {
 		MemberChaguanYushiAccountDbo account = new MemberChaguanYushiAccountDbo();
 		account.setId(result.getAccountId());
 		account.setMemberId(result.getMemberId());

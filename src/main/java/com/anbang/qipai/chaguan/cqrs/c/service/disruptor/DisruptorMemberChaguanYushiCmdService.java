@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.anbang.qipai.chaguan.cqrs.c.domain.member.MemberNotFoundException;
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.ChaguanYushiAccount;
-import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateChaguanYushiAccountResult;
+import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateMemberChaguanYushiAccountResult;
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.MemberHasYushiAccountAlreadyException;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.impl.MemberChaguanYushiCmdServiceImpl;
@@ -24,13 +24,13 @@ public class DisruptorMemberChaguanYushiCmdService extends DisruptorCmdServiceBa
 	private MemberChaguanYushiCmdServiceImpl memberChaguanYushiCmdServiceImpl;
 
 	@Override
-	public CreateChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
+	public CreateMemberChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
 			throws MemberHasYushiAccountAlreadyException {
 		CommonCommand cmd = new CommonCommand(MemberChaguanYushiCmdServiceImpl.class.getName(),
 				"createYushiAccountForNewMember", memberId, agentId);
-		DeferredResult<CreateChaguanYushiAccountResult> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(),
+		DeferredResult<CreateMemberChaguanYushiAccountResult> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(),
 				cmd, () -> {
-					CreateChaguanYushiAccountResult createResult = memberChaguanYushiCmdServiceImpl
+					CreateMemberChaguanYushiAccountResult createResult = memberChaguanYushiCmdServiceImpl
 							.createYushiAccountForNewMember(cmd.getParameter(), cmd.getParameter());
 					return createResult;
 				});

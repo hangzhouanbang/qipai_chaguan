@@ -16,6 +16,10 @@ public class ChaguanApplyService {
 		chaguanApplyDao.addApply(chaguanApply);
 	}
 
+	public ChaguanApply fingChaguanApplyByApplyId(String applyId) {
+		return chaguanApplyDao.fingByApplyId(applyId);
+	}
+
 	public void updateApplyStatus(String applyId, String status) {
 		chaguanApplyDao.updateApplyStatus(applyId, status);
 	}

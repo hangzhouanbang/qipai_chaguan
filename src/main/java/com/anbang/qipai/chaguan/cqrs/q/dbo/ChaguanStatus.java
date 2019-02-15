@@ -1,4 +1,4 @@
-package com.anbang.qipai.chaguan.conf;
+package com.anbang.qipai.chaguan.cqrs.q.dbo;
 
 public class ChaguanStatus {
 	public static final String NORMAL = "正常";

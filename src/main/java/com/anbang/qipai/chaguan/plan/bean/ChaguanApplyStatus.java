@@ -1,4 +1,4 @@
-package com.anbang.qipai.chaguan.conf;
+package com.anbang.qipai.chaguan.plan.bean;
 
 public class ChaguanApplyStatus {
 	public static final String APPLYING = "APPLYING";// 申请中

@@ -6,5 +6,7 @@ public interface ChaguanApplyDao {
 
 	void addApply(ChaguanApply chaguanApply);
 
+	ChaguanApply fingByApplyId(String applyId);
+
 	void updateApplyStatus(String applyId, String status);
 }

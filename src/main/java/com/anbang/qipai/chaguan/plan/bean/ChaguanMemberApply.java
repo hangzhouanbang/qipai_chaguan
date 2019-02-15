@@ -8,10 +8,12 @@ package com.anbang.qipai.chaguan.plan.bean;
  */
 public class ChaguanMemberApply {
 	private String id;
+	private String chaguanId;
 	private String memberId;// 玩家id
 	private String headimgurl;// 头像
 	private String nickname;// 昵称
-	private String createTime;// 申请时间
+	private long createTime;// 申请时间
+	private String state;// 申请状态
 
 	public String getId() {
 		return id;
@@ -19,6 +21,14 @@ public class ChaguanMemberApply {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getChaguanId() {
+		return chaguanId;
+	}
+
+	public void setChaguanId(String chaguanId) {
+		this.chaguanId = chaguanId;
 	}
 
 	public String getMemberId() {
@@ -45,12 +55,20 @@ public class ChaguanMemberApply {
 		this.nickname = nickname;
 	}
 
-	public String getCreateTime() {
+	public long getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(String createTime) {
+	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 }

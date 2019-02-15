@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.anbang.qipai.chaguan.cqrs.c.domain.member.MemberNotFoundException;
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.ChaguanYushiAccount;
-import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateChaguanYushiAccountResult;
+import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateMemberChaguanYushiAccountResult;
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.MemberChaguanYushiAccountManager;
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.MemberHasYushiAccountAlreadyException;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
@@ -18,11 +18,11 @@ import com.dml.accounting.TextAccountingSummary;
 public class MemberChaguanYushiCmdServiceImpl extends CmdServiceBase implements MemberChaguanYushiCmdService {
 
 	@Override
-	public CreateChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
+	public CreateMemberChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
 			throws MemberHasYushiAccountAlreadyException {
 		MemberChaguanYushiAccountManager memberChaguanYushiAccountManager = singletonEntityRepository
 				.getEntity(MemberChaguanYushiAccountManager.class);
-		CreateChaguanYushiAccountResult result = memberChaguanYushiAccountManager
+		CreateMemberChaguanYushiAccountResult result = memberChaguanYushiAccountManager
 				.createYushiAccountForNewMember(memberId, agentId);
 		return result;
 	}

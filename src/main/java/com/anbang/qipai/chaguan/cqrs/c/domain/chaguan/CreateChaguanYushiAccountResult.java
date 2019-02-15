@@ -1,20 +1,12 @@
-package com.anbang.qipai.chaguan.cqrs.c.domain.yushi;
+package com.anbang.qipai.chaguan.cqrs.c.domain.chaguan;
 
-/**
- * 创建茶馆玉石账户结果
- * 
- * @author lsc
- *
- */
 public class CreateChaguanYushiAccountResult {
 
 	private String accountId;
-	private String memberId;
 	private String agentId;
 
-	public CreateChaguanYushiAccountResult(String accountId, String memberId, String agentId) {
+	public CreateChaguanYushiAccountResult(String accountId, String agentId) {
 		this.accountId = accountId;
-		this.memberId = memberId;
 		this.agentId = agentId;
 	}
 
@@ -26,14 +18,6 @@ public class CreateChaguanYushiAccountResult {
 		this.accountId = accountId;
 	}
 
-	public String getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
-	}
-
 	public String getAgentId() {
 		return agentId;
 	}
@@ -41,4 +25,5 @@ public class CreateChaguanYushiAccountResult {
 	public void setAgentId(String agentId) {
 		this.agentId = agentId;
 	}
+
 }

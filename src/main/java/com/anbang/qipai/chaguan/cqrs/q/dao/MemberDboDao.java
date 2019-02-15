@@ -8,11 +8,7 @@ public interface MemberDboDao {
 
 	MemberDbo findById(String memberId);
 
-	void updateNickname(String memberId, String nickname);
-
-	void updateGender(String memberId, String gender);
-
-	void updateHeadimgurl(String memberId, String headimgurl);
+	void updateMemberBaseInfo(String memberId, String nickname, String headimgurl, String gender);
 
 	void remove(String memberId);
 }

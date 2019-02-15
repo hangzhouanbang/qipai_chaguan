@@ -4,14 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.anbang.qipai.chaguan.conf.ChaguanApplyStatus;
-import com.anbang.qipai.chaguan.conf.ChaguanStatus;
+import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.ChaguanHasYushiAccountAlreadyException;
+import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.CreateChaguanYushiAccountResult;
+import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.ChaguanCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanStatus;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
+import com.anbang.qipai.chaguan.plan.bean.ChaguanApplyStatus;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.plan.service.ChaguanApplyService;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
@@ -34,6 +38,12 @@ public class AgentChaguanController {
 
 	@Autowired
 	private ChaguanCmdService chaguanCmdService;
+
+	@Autowired
+	private ChaguanYushiService chaguanYushiService;
+
+	@Autowired
+	private AgentChaguanYushiCmdService agentChaguanYushiCmdService;
 
 	/**
 	 * 推广员申请开通茶馆
@@ -66,6 +76,17 @@ public class AgentChaguanController {
 	@RequestMapping("/apply_pass")
 	public CommonVO applychaguan_pass(String applyId) {
 		CommonVO vo = new CommonVO();
+		ChaguanApply apply = chaguanApplyService.fingChaguanApplyByApplyId(applyId);
+		// 创建茶馆玉石账户
+		try {
+			CreateChaguanYushiAccountResult result = agentChaguanYushiCmdService
+					.createNewAccountForAgent(apply.getAgentId());
+			chaguanYushiService.createYushiAccountForAgent(result);
+		} catch (ChaguanHasYushiAccountAlreadyException e) {
+			vo.setSuccess(false);
+			vo.setMsg("ChaguanHasYushiAccountAlreadyException");
+			return vo;
+		}
 		chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.SUCCESS);
 		return vo;
 	}

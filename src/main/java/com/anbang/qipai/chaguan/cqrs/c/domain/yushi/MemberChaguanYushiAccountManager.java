@@ -25,7 +25,7 @@ public class MemberChaguanYushiAccountManager {
 	/**
 	 * 为玩家创建茶馆玉石账户
 	 */
-	public CreateChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
+	public CreateMemberChaguanYushiAccountResult createYushiAccountForNewMember(String memberId, String agentId)
 			throws MemberHasYushiAccountAlreadyException {
 		if (idAccountMap.containsKey(memberId + "_" + agentId + "_chaguan_yushi_wallet")) {
 			throw new MemberHasYushiAccountAlreadyException();
@@ -46,7 +46,7 @@ public class MemberChaguanYushiAccountManager {
 		}
 		accountIds.add(account.getId());
 		memberIdAccountIdsMap.put(memberId, accountIds);
-		CreateChaguanYushiAccountResult result = new CreateChaguanYushiAccountResult(account.getId(), memberId,
+		CreateMemberChaguanYushiAccountResult result = new CreateMemberChaguanYushiAccountResult(account.getId(), memberId,
 				agentId);
 		return result;
 	}
