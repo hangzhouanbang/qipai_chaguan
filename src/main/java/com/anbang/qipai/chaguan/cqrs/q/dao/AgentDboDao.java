@@ -9,4 +9,8 @@ public interface AgentDboDao {
 	void updateBaseInfo(String agentId, String nickname, String headimgurl, String gender);
 
 	AgentDbo findAgentDboByAgentId(String agentId);
+
+	void updateAgentAuth(String agentId, boolean agentAuth);
+
+	void updateAgentState(String agentId, String state);
 }

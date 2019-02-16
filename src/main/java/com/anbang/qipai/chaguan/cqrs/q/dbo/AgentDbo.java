@@ -14,6 +14,8 @@ public class AgentDbo {
 	private String gender;// 推广员性别:男:male,女:female
 	private String headimgurl;// 头像url
 	private AgentType agentType;// 推广员类型
+	private boolean agentAuth;// 是否通过推广员申请
+	private String state;// 正常,封停
 	private int inviteMemberNum;// 邀请玩家数量
 
 	public String getId() {
@@ -56,6 +58,22 @@ public class AgentDbo {
 		this.agentType = agentType;
 	}
 
+	public boolean isAgentAuth() {
+		return agentAuth;
+	}
+
+	public void setAgentAuth(boolean agentAuth) {
+		this.agentAuth = agentAuth;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public int getInviteMemberNum() {
 		return inviteMemberNum;
 	}
@@ -63,4 +81,5 @@ public class AgentDbo {
 	public void setInviteMemberNum(int inviteMemberNum) {
 		this.inviteMemberNum = inviteMemberNum;
 	}
+
 }

@@ -35,7 +35,12 @@ public class ChaguanMemberDboService {
 		return new ListPage(chaguanList, page, size, (int) amount);
 	}
 
-	public void updateChaguanMemberDboRemoveByMemberId(String memberId, boolean remove) {
-		chaguanMemberDboDao.updateChaguanMemberDboRemoveByMemberId(memberId, remove);
+	public void updateChaguanMemberDboRemoveByMemberIdAndChaguanId(String memberId, String chaguanId, boolean remove) {
+		chaguanMemberDboDao.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId, chaguanId, remove);
+	}
+
+	public void chaguanMemberSet(String memberId, String chaguanId, String payType, String memberDesc) {
+		chaguanMemberDboDao.updateChaguanMemberDboMemberDescByMemberIdAndChaguanId(memberId, chaguanId, memberDesc);
+		chaguanMemberDboDao.updateChaguanMemberDboPayTypeByMemberIdAndChaguanId(memberId, chaguanId, payType);
 	}
 }

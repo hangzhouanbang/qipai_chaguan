@@ -11,6 +11,7 @@ public class ChaguanMemberDbo {
 	private String memberId;// 玩家id
 	private String headimgurl;// 玩家头像
 	private String memberNickname;// 玩家昵称
+	private String memberDesc;// 玩家备注
 	private String chaguanId;// 茶馆id
 	private String chaguanName;// 茶馆名称
 	private String chaguanDesc;// 茶馆描述
@@ -53,6 +54,14 @@ public class ChaguanMemberDbo {
 
 	public void setMemberNickname(String memberNickname) {
 		this.memberNickname = memberNickname;
+	}
+
+	public String getMemberDesc() {
+		return memberDesc;
+	}
+
+	public void setMemberDesc(String memberDesc) {
+		this.memberDesc = memberDesc;
 	}
 
 	public String getChaguanId() {
@@ -142,5 +151,4 @@ public class ChaguanMemberDbo {
 	public void setRemove(boolean remove) {
 		this.remove = remove;
 	}
-
 }

@@ -220,4 +220,35 @@ public class AgentChaguanController {
 		chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
 		return vo;
 	}
+
+	/**
+	 * 移除茶馆成员
+	 */
+	@RequestMapping("/chaguan_member_remove")
+	public CommonVO chaguanMemberRemove(String token, String chaguanId, String memberId) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId, chaguanId, true);
+		return vo;
+	}
+
+	/**
+	 * 设置茶馆成员
+	 */
+	@RequestMapping("/chaguan_member_set")
+	public CommonVO chaguanMemberSet(String token, String chaguanId, String memberId, String payType,
+			String memberDesc) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		chaguanMemberDboService.chaguanMemberSet(memberId, chaguanId, payType, memberDesc);
+		return vo;
+	}
 }
