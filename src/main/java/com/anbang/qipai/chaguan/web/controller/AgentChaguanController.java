@@ -19,6 +19,7 @@ import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanApplyMsgService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApplyStatus;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
@@ -55,6 +56,9 @@ public class AgentChaguanController {
 	@Autowired
 	private AgentChaguanYushiCmdService agentChaguanYushiCmdService;
 
+	@Autowired
+	private ChaguanApplyMsgService chaguanApplyMsgService;
+
 	/**
 	 * 推广员申请开通茶馆
 	 */
@@ -77,6 +81,7 @@ public class AgentChaguanController {
 		apply.setCreateTime(System.currentTimeMillis());
 		apply.setStatus(ChaguanApplyStatus.APPLYING);
 		chaguanApplyService.addApply(apply);
+		chaguanApplyMsgService.recordChaguanApply(apply);
 		return vo;
 	}
 
