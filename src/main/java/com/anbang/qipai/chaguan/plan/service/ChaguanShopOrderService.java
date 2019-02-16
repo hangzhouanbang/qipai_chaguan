@@ -32,7 +32,7 @@ public class ChaguanShopOrderService {
 				new BigDecimal(Double.toString(productPrice)).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
 		order.setNumber(number);
 		order.setRewardType(rewardType);
-		order.setRewardNum(rewardNum);
+		order.setRewardNum(rewardNum * number);
 		order.setTotalamount(order.getProductPrice() * number);
 		order.setReqIP(reqIP);
 		order.setCreateTime(System.currentTimeMillis());
@@ -45,11 +45,7 @@ public class ChaguanShopOrderService {
 		return chaguanShopOrderDao.findChaguanShopOrderById(id);
 	}
 
-	public ChaguanShopOrder findMemberOrderById(String id) {
+	public ChaguanShopOrder findChaguanShopOrderById(String id) {
 		return chaguanShopOrderDao.findChaguanShopOrderById(id);
-	}
-
-	public ChaguanShopOrder findMemberOrderByPayerIdAndProductName(String payerId, String productName) {
-		return chaguanShopOrderDao.findChaguanShopOrderByPayerIdAndProductName(payerId, productName);
 	}
 }

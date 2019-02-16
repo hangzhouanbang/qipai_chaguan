@@ -6,6 +6,8 @@ public interface ChaguanYushiAccountDboDao {
 
 	void insert(ChaguanYushiAccountDbo account);
 
+	ChaguanYushiAccountDbo findByAgentId(String agentId);
+
 	void updateBalance(String id, int balance);
 
 	void updateAgentId(String id, String agentId);

@@ -30,6 +30,10 @@ public class ChaguanYushiService {
 		return account;
 	}
 
+	public ChaguanYushiAccountDbo findChaguanYushiAccountDboByAgentId(String agentId) {
+		return chaguanYushiAccountDboDao.findByAgentId(agentId);
+	}
+
 	/**
 	 * 记录流水并更新账户
 	 */
