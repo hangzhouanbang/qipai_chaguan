@@ -1,5 +1,8 @@
 package com.anbang.qipai.chaguan.web.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,6 +66,9 @@ public class MemberChaguanYushiController {
 			vo.setMsg("InsufficientBalanceException");
 			return vo;
 		}
+		Map data = new HashMap<>();
+		vo.setData(data);
+		data.put("member info", memberDbo);
 		return vo;
 	}
 
