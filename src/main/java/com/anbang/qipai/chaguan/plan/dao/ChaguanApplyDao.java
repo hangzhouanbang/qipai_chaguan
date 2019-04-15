@@ -8,5 +8,7 @@ public interface ChaguanApplyDao {
 
 	ChaguanApply fingByApplyId(String applyId);
 
+	ChaguanApply fingByAgentIdAndStatus(String agentId, String status);
+
 	void updateApplyStatus(String applyId, String status);
 }

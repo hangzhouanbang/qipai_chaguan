@@ -20,6 +20,10 @@ public class ChaguanApplyService {
 		return chaguanApplyDao.fingByApplyId(applyId);
 	}
 
+	public ChaguanApply fingChaguanApplyByAgentIdAndStatus(String agentId, String status) {
+		return chaguanApplyDao.fingByAgentIdAndStatus(agentId, status);
+	}
+
 	public void updateApplyStatus(String applyId, String status) {
 		chaguanApplyDao.updateApplyStatus(applyId, status);
 	}

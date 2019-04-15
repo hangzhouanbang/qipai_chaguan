@@ -14,6 +14,8 @@ public class MemberChaguanYushiAccountDbo {
 
 	private String agentId;// 馆主id
 
+	private String chaguanId;// 茶馆id
+
 	private int balance;// 余额
 
 	public String getId() {
@@ -46,5 +48,13 @@ public class MemberChaguanYushiAccountDbo {
 
 	public void setBalance(int balance) {
 		this.balance = balance;
+	}
+
+	public String getChaguanId() {
+		return chaguanId;
+	}
+
+	public void setChaguanId(String chaguanId) {
+		this.chaguanId = chaguanId;
 	}
 }

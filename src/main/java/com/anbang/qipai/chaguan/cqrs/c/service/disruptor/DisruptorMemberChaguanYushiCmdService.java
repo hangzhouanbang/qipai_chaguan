@@ -16,7 +16,7 @@ import com.dml.accounting.InsufficientBalanceException;
 import com.highto.framework.concurrent.DeferredResult;
 import com.highto.framework.ddd.CommonCommand;
 
-@Component(value = "MemberChaguanYushiCmdService")
+@Component(value = "memberChaguanYushiCmdService")
 public class DisruptorMemberChaguanYushiCmdService extends DisruptorCmdServiceBase
 		implements MemberChaguanYushiCmdService {
 
@@ -28,8 +28,8 @@ public class DisruptorMemberChaguanYushiCmdService extends DisruptorCmdServiceBa
 			throws MemberHasYushiAccountAlreadyException {
 		CommonCommand cmd = new CommonCommand(MemberChaguanYushiCmdServiceImpl.class.getName(),
 				"createYushiAccountForNewMember", memberId, agentId);
-		DeferredResult<CreateMemberChaguanYushiAccountResult> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(),
-				cmd, () -> {
+		DeferredResult<CreateMemberChaguanYushiAccountResult> result = publishEvent(
+				disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
 					CreateMemberChaguanYushiAccountResult createResult = memberChaguanYushiCmdServiceImpl
 							.createYushiAccountForNewMember(cmd.getParameter(), cmd.getParameter());
 					return createResult;
@@ -118,6 +118,27 @@ public class DisruptorMemberChaguanYushiCmdService extends DisruptorCmdServiceBa
 			Set<String> accountIds = memberChaguanYushiCmdServiceImpl
 					.clearChaguanYushiAccountOfMember(cmd.getParameter());
 			return accountIds;
+		});
+		try {
+			return result.getResult();
+		} catch (Exception e) {
+			if (e instanceof MemberNotFoundException) {
+				throw (MemberNotFoundException) e;
+			} else {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	@Override
+	public AccountingRecord withdrawAnyway(String memberId, String agentId, Integer amount, String textSummary,
+			Long currentTime) throws MemberNotFoundException {
+		CommonCommand cmd = new CommonCommand(MemberChaguanYushiCmdServiceImpl.class.getName(), "withdrawAnyway",
+				memberId, agentId, amount, textSummary, currentTime);
+		DeferredResult<AccountingRecord> result = publishEvent(disruptorFactory.getCoreCmdDisruptor(), cmd, () -> {
+			AccountingRecord accountingRecord = memberChaguanYushiCmdServiceImpl.withdrawAnyway(cmd.getParameter(),
+					cmd.getParameter(), cmd.getParameter(), cmd.getParameter(), cmd.getParameter());
+			return accountingRecord;
 		});
 		try {
 			return result.getResult();

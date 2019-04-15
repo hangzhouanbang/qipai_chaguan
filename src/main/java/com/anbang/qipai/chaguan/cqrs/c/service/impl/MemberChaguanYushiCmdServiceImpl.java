@@ -65,4 +65,14 @@ public class MemberChaguanYushiCmdServiceImpl extends CmdServiceBase implements 
 		return accountIds;
 	}
 
+	@Override
+	public AccountingRecord withdrawAnyway(String memberId, String agentId, Integer amount, String textSummary,
+			Long currentTime) throws MemberNotFoundException {
+		MemberChaguanYushiAccountManager memberChaguanYushiAccountManager = singletonEntityRepository
+				.getEntity(MemberChaguanYushiAccountManager.class);
+		AccountingRecord ar = memberChaguanYushiAccountManager.withdrawAnyway(memberId, agentId, amount,
+				new TextAccountingSummary(textSummary), currentTime);
+		return ar;
+	}
+
 }

@@ -46,8 +46,8 @@ public class MemberChaguanYushiAccountManager {
 		}
 		accountIds.add(account.getId());
 		memberIdAccountIdsMap.put(memberId, accountIds);
-		CreateMemberChaguanYushiAccountResult result = new CreateMemberChaguanYushiAccountResult(account.getId(), memberId,
-				agentId);
+		CreateMemberChaguanYushiAccountResult result = new CreateMemberChaguanYushiAccountResult(account.getId(),
+				memberId, agentId);
 		return result;
 	}
 
@@ -106,6 +106,19 @@ public class MemberChaguanYushiAccountManager {
 		}
 		ChaguanYushiAccount account = idAccountMap.get(memberId + "_" + agentId + "_chaguan_yushi_wallet");
 		AccountingRecord record = account.withdraw(amount, accountingSummary, withdrawTime);
+		return record;
+	}
+
+	/**
+	 * 减少玩家的一个茶馆玉石账户余额,可赊账
+	 */
+	public AccountingRecord withdrawAnyway(String memberId, String agentId, int amount,
+			AccountingSummary accountingSummary, long withdrawTime) throws MemberNotFoundException {
+		if (!memberIdAccountIdsMap.containsKey(memberId)) {
+			throw new MemberNotFoundException();
+		}
+		ChaguanYushiAccount account = idAccountMap.get(memberId + "_" + agentId + "_chaguan_yushi_wallet");
+		AccountingRecord record = account.withdrawAnyway(amount, accountingSummary, withdrawTime);
 		return record;
 	}
 }

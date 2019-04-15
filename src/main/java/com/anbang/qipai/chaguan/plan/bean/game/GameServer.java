@@ -1,4 +1,4 @@
-package com.anbang.qipai.chaguan.plan.bean;
+package com.anbang.qipai.chaguan.plan.bean.game;
 
 /**
  * 游戏服务器
@@ -64,11 +64,11 @@ public class GameServer {
 		this.onlineTime = onlineTime;
 	}
 
-    public int getState() {
-        return state;
-    }
+	public int getState() {
+		return state;
+	}
 
-    public void setState(int state) {
-        this.state = state;
-    }
+	public void setState(int state) {
+		this.state = state;
+	}
 }

@@ -5,6 +5,7 @@ public class ChaguanVO {
 	private String name;// 茶馆名称
 	private String desc;// 茶馆描述
 	private int memberNum;// 玩家人数
+	private int balance;// 茶馆玉石
 	private int onlineAmount;
 
 	public String getId() {
@@ -45,6 +46,14 @@ public class ChaguanVO {
 
 	public void setOnlineAmount(int onlineAmount) {
 		this.onlineAmount = onlineAmount;
+	}
+
+	public int getBalance() {
+		return balance;
+	}
+
+	public void setBalance(int balance) {
+		this.balance = balance;
 	}
 
 }

@@ -1,19 +1,17 @@
-package com.anbang.qipai.chaguan.plan.bean;
+package com.anbang.qipai.chaguan.plan.bean.game;
 
 /**
- * 游戏规则（玩法）
+ * 玩法互斥组
  * 
  * @author Neo
  *
  */
-public class GameLaw {
+public class LawsMutexGroup {
 
 	private String id;
 	private Game game;
 	private String name;// 拼音缩写，用于游戏内唯一标示
 	private String desc;
-	private String mutexGroupId;
-	private boolean vip;
 
 	public String getId() {
 		return id;
@@ -45,22 +43,6 @@ public class GameLaw {
 
 	public void setDesc(String desc) {
 		this.desc = desc;
-	}
-
-	public String getMutexGroupId() {
-		return mutexGroupId;
-	}
-
-	public void setMutexGroupId(String mutexGroupId) {
-		this.mutexGroupId = mutexGroupId;
-	}
-
-	public boolean isVip() {
-		return vip;
-	}
-
-	public void setVip(boolean vip) {
-		this.vip = vip;
 	}
 
 }

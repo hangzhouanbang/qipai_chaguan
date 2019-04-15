@@ -13,10 +13,12 @@ import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanMemberDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberDboService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberApply;
@@ -24,6 +26,7 @@ import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberApplyState;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberPayType;
 import com.anbang.qipai.chaguan.plan.service.ChaguanMemberApplyService;
 import com.anbang.qipai.chaguan.plan.service.MemberAuthService;
+import com.anbang.qipai.chaguan.web.vo.ChaguanVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 
 @RestController
@@ -54,6 +57,9 @@ public class MemberController {
 	@Autowired
 	private MemberChaguanYushiService memberChaguanYushiService;
 
+	@Autowired
+	private ChaguanYushiService chaguanYushiService;
+
 	/**
 	 * 根据茶馆id查找茶馆
 	 */
@@ -66,10 +72,20 @@ public class MemberController {
 			vo.setMsg("chaguan not found");
 			return vo;
 		}
+		int onlineAmount = (int) chaguanMemberDboService.countOnlineMemberByChaguanId(chaguanId);
+		ChaguanYushiAccountDbo account = chaguanYushiService
+				.findChaguanYushiAccountDboByAgentId(chaguanDbo.getAgentId());
+		ChaguanVO chaguan = new ChaguanVO();
+		chaguan.setId(chaguanDbo.getId());
+		chaguan.setName(chaguanDbo.getName());
+		chaguan.setDesc(chaguanDbo.getDesc());
+		chaguan.setOnlineAmount(onlineAmount);
+		chaguan.setMemberNum(chaguanDbo.getMemberNum());
+		chaguan.setBalance(account.getBalance());
 		vo.setMsg("chaguan info");
 		Map data = new HashMap<>();
 		vo.setData(data);
-		data.put("chaguan", chaguanDbo);
+		data.put("chaguan", chaguan);
 		return vo;
 	}
 
@@ -120,7 +136,7 @@ public class MemberController {
 		try {
 			CreateMemberChaguanYushiAccountResult result = memberChaguanYushiCmdService
 					.createYushiAccountForNewMember(member.getId(), agent.getId());
-			memberChaguanYushiService.createYushiAccountForNewMember(result);
+			memberChaguanYushiService.createYushiAccountForNewMember(result, chaguanDbo.getId());
 		} catch (MemberHasYushiAccountAlreadyException e) {
 			vo.setSuccess(false);
 			vo.setMsg("MemberHasYushiAccountAlreadyException");

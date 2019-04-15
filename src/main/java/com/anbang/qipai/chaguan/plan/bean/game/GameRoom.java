@@ -1,30 +1,57 @@
-package com.anbang.qipai.chaguan.cqrs.q.dbo;
+package com.anbang.qipai.chaguan.plan.bean.game;
 
+import java.util.HashSet;
 import java.util.List;
-
-import com.anbang.qipai.chaguan.plan.bean.game.Game;
-import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
-import com.anbang.qipai.chaguan.plan.bean.game.GameServer;
+import java.util.Set;
 
 /**
- * 游戏桌子
+ * 游戏房间
  * 
- * @author lsc
+ * @author Neo
  *
  */
-public class GameTableDbo {
+public class GameRoom {
 	private String id;
-	private String no;// 桌号
-	private Game game;// 游戏
-	private List<GameLaw> laws;// 玩法
-	private int playersCount;// 玩家数
-	private int panCountPerJu;// 一局的盘数
-	private GameServer server;// 服务器
-	private int currentPanNum;// 当前盘
-	private String createMemberId;// 创建者
-	private long createTime;// 创建时间
-	private long deadlineTime;// 有效时间
-	private String state;// 桌子状态
+	private String no;// 房间6位编号,可循环使用
+	private Game game;
+	private List<GameLaw> laws;
+	private boolean vip;
+	private int playersCount;
+	private int panCountPerJu;
+	private ServerGame serverGame;
+	private int currentPanNum;
+	private String createMemberId;
+	private long createTime;
+	private long deadlineTime;
+	private boolean finished;
+
+	public void calculateVip() {
+		if (laws != null) {
+			for (GameLaw law : laws) {
+				if (law.isVip()) {
+					vip = true;
+					return;
+				}
+			}
+		}
+		vip = false;
+	}
+
+	public boolean validateLaws() {
+		if (laws != null) {
+			Set<String> groupIdSet = new HashSet<>();
+			for (GameLaw law : laws) {
+				String groupId = law.getMutexGroupId();
+				if (groupId != null) {
+					// contain this element,return false
+					if (!groupIdSet.add(groupId)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 
 	public String getId() {
 		return id;
@@ -58,6 +85,14 @@ public class GameTableDbo {
 		this.laws = laws;
 	}
 
+	public boolean isVip() {
+		return vip;
+	}
+
+	public void setVip(boolean vip) {
+		this.vip = vip;
+	}
+
 	public int getPlayersCount() {
 		return playersCount;
 	}
@@ -74,12 +109,12 @@ public class GameTableDbo {
 		this.panCountPerJu = panCountPerJu;
 	}
 
-	public GameServer getServer() {
-		return server;
+	public ServerGame getServerGame() {
+		return serverGame;
 	}
 
-	public void setServer(GameServer server) {
-		this.server = server;
+	public void setServerGame(ServerGame serverGame) {
+		this.serverGame = serverGame;
 	}
 
 	public int getCurrentPanNum() {
@@ -114,12 +149,12 @@ public class GameTableDbo {
 		this.deadlineTime = deadlineTime;
 	}
 
-	public String getState() {
-		return state;
+	public boolean isFinished() {
+		return finished;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 
 }

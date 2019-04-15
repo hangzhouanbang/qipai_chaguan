@@ -24,4 +24,7 @@ public interface MemberChaguanYushiCmdService {
 
 	AccountingRecord withdraw(String memberId, String agentId, Integer amount, String textSummary, Long currentTime)
 			throws InsufficientBalanceException, MemberNotFoundException;
+
+	AccountingRecord withdrawAnyway(String memberId, String agentId, Integer amount, String textSummary,
+			Long currentTime) throws MemberNotFoundException;
 }
