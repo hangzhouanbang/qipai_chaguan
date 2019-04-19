@@ -23,6 +23,10 @@ public class ChaguanMemberDboService {
 		return chaguanMemberDboDao.countOnlineMemberByChaguanId(chaguanId);
 	}
 
+	public ChaguanMemberDbo findChaguanMemberDboByMemberIdAndChaguanId(String memberId, String chaguanId) {
+		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId);
+	}
+
 	public ListPage findChaguanMemberDboByMemberId(int page, int size, String memberId) {
 		long amount = chaguanMemberDboDao.getAmountByMemberId(memberId);
 		List<ChaguanMemberDbo> chaguanList = chaguanMemberDboDao.findByMemberId(page, size, memberId);

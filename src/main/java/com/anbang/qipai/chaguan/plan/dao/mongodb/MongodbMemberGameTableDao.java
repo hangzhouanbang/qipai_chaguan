@@ -77,4 +77,11 @@ public class MongodbMemberGameTableDao implements MemberGameTableDao {
 		return mongoTemplate.count(query, MemberGameTable.class);
 	}
 
+	@Override
+	public List<MemberGameTable> findMemberGameTableByGameAndServerGameId(Game game, String serverGameId) {
+		Query query = new Query(Criteria.where("gameTable.game").is(game));
+		query.addCriteria(Criteria.where("gameTable.serverGame.gameId").is(serverGameId));
+		return mongoTemplate.find(query, MemberGameTable.class);
+	}
+
 }

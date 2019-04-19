@@ -10,6 +10,7 @@ import org.eclipse.jetty.client.api.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,6 +37,7 @@ import com.anbang.qipai.chaguan.web.fb.WzmjLawsFB;
 import com.anbang.qipai.chaguan.web.fb.WzskLawsFB;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVoUtil;
+import com.anbang.qipai.chaguan.web.vo.GameTableVO;
 import com.google.gson.Gson;
 
 /**
@@ -149,9 +151,9 @@ public class GamePlayerController {
 	/**
 	 * 创建放炮麻将房间
 	 */
-	@RequestMapping(value = "/create_fpmj_room")
+	@RequestMapping(value = "/create_fpmj_table")
 	@ResponseBody
-	public CommonVO createFpmjRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createFpmjTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -231,9 +233,9 @@ public class GamePlayerController {
 	/**
 	 * 创建温州麻将房间
 	 */
-	@RequestMapping(value = "/create_wzmj_room")
+	@RequestMapping(value = "/create_wzmj_table")
 	@ResponseBody
-	public CommonVO createWzmjRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createWzmjTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -315,9 +317,9 @@ public class GamePlayerController {
 	/**
 	 * 创建点炮麻将房间
 	 */
-	@RequestMapping(value = "/create_dpmj_room")
+	@RequestMapping(value = "/create_dpmj_table")
 	@ResponseBody
-	public CommonVO createDpmjRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createDpmjTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -403,9 +405,9 @@ public class GamePlayerController {
 	/**
 	 * 创建温州双扣房间
 	 */
-	@RequestMapping(value = "/create_wzsk_room")
+	@RequestMapping(value = "/create_wzsk_table")
 	@ResponseBody
-	public CommonVO createWzskRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createWzskTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -492,9 +494,9 @@ public class GamePlayerController {
 	/**
 	 * 创建斗地主房间
 	 */
-	@RequestMapping(value = "/create_ddz_room")
+	@RequestMapping(value = "/create_ddz_table")
 	@ResponseBody
-	public CommonVO createDdzRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createDdzTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -576,9 +578,9 @@ public class GamePlayerController {
 	/**
 	 * 创建大菠萝房间
 	 */
-	@RequestMapping(value = "/create_dbl_room")
+	@RequestMapping(value = "/create_dbl_table")
 	@ResponseBody
-	public CommonVO createDblRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createDblTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -663,9 +665,9 @@ public class GamePlayerController {
 	/**
 	 * 创建跑得快房间
 	 */
-	@RequestMapping(value = "/create_pdk_room")
+	@RequestMapping(value = "/create_pdk_table")
 	@ResponseBody
-	public CommonVO createPdkRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createPdkTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
 			return CommonVoUtil.error("invalid token");
@@ -738,9 +740,9 @@ public class GamePlayerController {
 	/**
 	 * 创建茶苑双扣房间
 	 */
-	@RequestMapping(value = "/create_cysk_room")
+	@RequestMapping(value = "/create_cysk_table")
 	@ResponseBody
-	public CommonVO createCyskRoom(String chaguanId, String token, @RequestBody List<String> lawNames) {
+	public CommonVO createCyskTable(String chaguanId, String token, @RequestBody List<String> lawNames) {
 		CommonVO vo = new CommonVO();
 		String memberId = memberAuthService.getMemberIdBySessionId(token);
 		if (memberId == null) {
@@ -924,6 +926,33 @@ public class GamePlayerController {
 		data.put("gameId", serverGameId);
 		data.put("game", gameTable.getGame());
 		vo.setData(data);
+		return vo;
+	}
+
+	/**
+	 * 查询桌子
+	 */
+	@RequestMapping(value = "/query_table")
+	@ResponseBody
+	public CommonVO queryTable(String token, String chaguanId, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "20") int size) {
+		CommonVO vo = new CommonVO();
+		String memberId = memberAuthService.getMemberIdBySessionId(token);
+		if (memberId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+			return vo;
+		}
+		MemberLoginLimitRecord limit = memberLoginLimitRecordService.findByMemberId(memberId, true);
+		if (limit != null) {
+			vo.setSuccess(false);
+			vo.setMsg("login limit");
+			return vo;
+		}
+		Map data = new HashMap<>();
+		vo.setData(data);
+		List<GameTableVO> tableList = gameService.findGameTableByChaguanId(chaguanId, page, size);
+		data.put("tableList", tableList);
 		return vo;
 	}
 }

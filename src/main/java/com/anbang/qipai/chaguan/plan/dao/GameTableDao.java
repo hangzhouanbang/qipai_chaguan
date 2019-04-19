@@ -15,6 +15,8 @@ public interface GameTableDao {
 
 	List<GameTable> findExpireGameTable(long deadlineTime, String state);
 
+	List<GameTable> findGameTableByChaguanIdAndState(String chaguanId, String state, int page, int size);
+
 	void updateGameTableState(List<String> ids, String state);
 
 	void updateStateGameTable(Game game, String serverGameId, String state);

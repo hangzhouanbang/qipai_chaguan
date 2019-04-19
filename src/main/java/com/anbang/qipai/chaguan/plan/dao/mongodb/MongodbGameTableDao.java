@@ -67,4 +67,13 @@ public class MongodbGameTableDao implements GameTableDao {
 		mongoTemplate.updateFirst(query, update, GameTable.class);
 	}
 
+	@Override
+	public List<GameTable> findGameTableByChaguanIdAndState(String chaguanId, String state, int page, int size) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("chaguanId").is(chaguanId).andOperator(Criteria.where("state").is(state)));
+		query.skip((page - 1) * size);
+		query.limit(size);
+		return mongoTemplate.find(query, GameTable.class);
+	}
+
 }

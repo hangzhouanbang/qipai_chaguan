@@ -24,6 +24,8 @@ import com.anbang.qipai.chaguan.plan.dao.GameServerDao;
 import com.anbang.qipai.chaguan.plan.dao.GameTableDao;
 import com.anbang.qipai.chaguan.plan.dao.LawsMutexGroupDao;
 import com.anbang.qipai.chaguan.plan.dao.MemberGameTableDao;
+import com.anbang.qipai.chaguan.web.vo.GameTableVO;
+import com.anbang.qipai.chaguan.web.vo.PlayerVO;
 
 @Service
 public class GameService {
@@ -594,6 +596,33 @@ public class GameService {
 	public void gameTableFinished(Game game, String serverGameId) {
 		gameTableDao.updateStateGameTable(game, serverGameId, GameTableStateConfig.FINISH);
 		memberGameTableDao.removeExpireRoom(game, serverGameId);
+	}
+
+	public List<GameTableVO> findGameTableByChaguanId(String chaguanId, int page, int size) {
+		List<GameTableVO> tableList = new ArrayList<>();
+		List<GameTable> gameTableList = gameTableDao.findGameTableByChaguanIdAndState(chaguanId,
+				GameTableStateConfig.WAITING, page, size);
+		for (GameTable gameTable : gameTableList) {
+			GameTableVO table = new GameTableVO();
+			table.setChaguanId(gameTable.getChaguanId());
+			table.setGame(gameTable.getGame());
+			table.setLaws(gameTable.getLaws());
+			table.setNo(gameTable.getNo());
+			table.setPlayersCount(gameTable.getPlayersCount());
+			table.setState(gameTable.getState());
+			List<PlayerVO> playerList = new ArrayList<>();
+			table.setPlayerList(playerList);
+			List<MemberGameTable> memberGameTableList = memberGameTableDao.findMemberGameTableByGameAndServerGameId(
+					gameTable.getGame(), gameTable.getServerGame().getGameId());
+			for (MemberGameTable memberGameTable : memberGameTableList) {
+				PlayerVO player = new PlayerVO();
+				player.setMemberId(memberGameTable.getMemberId());
+				player.setNickname(memberGameTable.getNickname());
+				player.setHeadimgurl(memberGameTable.getHeadimgurl());
+				playerList.add(player);
+			}
+		}
+		return tableList;
 	}
 
 	public void gameTablePlaying(Game game, String serverGameId) {

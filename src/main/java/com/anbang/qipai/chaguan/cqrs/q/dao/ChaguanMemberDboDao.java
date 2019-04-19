@@ -18,6 +18,8 @@ public interface ChaguanMemberDboDao {
 
 	List<ChaguanMemberDbo> findByMemberId(int page, int size, String memberId);
 
+	ChaguanMemberDbo findByMemberIdAndChaguanId(String memberId, String chaguanId);
+
 	void updateChaguanMemberDboRemoveByMemberIdAndChaguanId(String memberId, String chaguanId, boolean remove);
 
 	void updateChaguanMemberDboChaguanNameAndDescByChaguanId(String chaguanId, String chaguanName, String chaguanDesc);

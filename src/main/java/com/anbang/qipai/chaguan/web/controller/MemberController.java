@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateMemberChaguanYushiAccountResult;
@@ -28,6 +29,7 @@ import com.anbang.qipai.chaguan.plan.service.ChaguanMemberApplyService;
 import com.anbang.qipai.chaguan.plan.service.MemberAuthService;
 import com.anbang.qipai.chaguan.web.vo.ChaguanVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
+import com.highto.framework.web.page.ListPage;
 
 /**
  * 玩家管理
@@ -65,6 +67,26 @@ public class MemberController {
 
 	@Autowired
 	private ChaguanYushiService chaguanYushiService;
+
+	/**
+	 * 查找玩家茶馆
+	 */
+	@RequestMapping("/query_chaguan")
+	public CommonVO queryChaguan(String token, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		CommonVO vo = new CommonVO();
+		String memberId = memberAuthService.getMemberIdBySessionId(token);
+		if (memberId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		ListPage listPage = chaguanMemberDboService.findChaguanMemberDboByMemberId(page, size, memberId);
+		vo.setMsg("chaguan info");
+		Map data = new HashMap<>();
+		vo.setData(data);
+		data.put("listPage", listPage);
+		return vo;
+	}
 
 	/**
 	 * 根据茶馆id查找茶馆
@@ -105,8 +127,18 @@ public class MemberController {
 		if (memberId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		MemberDbo member = memberDboService.findMemberDboById(memberId);
+		ChaguanMemberDbo chaguanMemberDbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId,
+				chaguanId);
+		if (chaguanMemberDbo != null && !chaguanMemberDbo.isRemove()
+				&& chaguanMemberApplyService.findChaguanMemberApplyByMemberIdAndChaguanIdAndState(memberId, chaguanId,
+						ChaguanMemberApplyState.APPLYING) != null) {
+			vo.setSuccess(false);
+			vo.setMsg("applying");
+			return vo;
+		}
 		ChaguanMemberApply apply = new ChaguanMemberApply();
 		apply.setChaguanId(chaguanId);
 		apply.setMemberId(memberId);
@@ -144,8 +176,12 @@ public class MemberController {
 					.createYushiAccountForNewMember(member.getId(), agent.getId());
 			memberChaguanYushiService.createYushiAccountForNewMember(result, chaguanDbo.getId());
 		} catch (MemberHasYushiAccountAlreadyException e) {
-			vo.setSuccess(false);
-			vo.setMsg("MemberHasYushiAccountAlreadyException");
+			chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(member.getId(),
+					chaguanDbo.getId(), false);
+			// 更新茶馆玩家人数
+			chaguanDboService.updateChaguanDboMemberNum(chaguanDbo.getId());
+			// 修改申请状态
+			chaguanMemberApplyService.chaguanMemberApplyPass(applyId);
 			return vo;
 		}
 		// 填充茶馆信息

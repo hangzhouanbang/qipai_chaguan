@@ -15,6 +15,8 @@ public interface MemberGameTableDao {
 
 	long countMemberByGameAndServerGameId(Game game, String serverGameId);
 
+	List<MemberGameTable> findMemberGameTableByGameAndServerGameId(Game game, String serverGameId);
+
 	void remove(Game game, String serverGameId, String memberId);
 
 	void removeExpireRoom(Game game, String serverGameId);

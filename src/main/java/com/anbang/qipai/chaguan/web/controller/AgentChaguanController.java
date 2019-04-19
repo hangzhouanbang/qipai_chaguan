@@ -31,6 +31,7 @@ import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApplyStatus;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.plan.service.ChaguanApplyService;
+import com.anbang.qipai.chaguan.plan.service.ChaguanMemberApplyService;
 import com.anbang.qipai.chaguan.web.vo.ChaguanVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
@@ -82,6 +83,9 @@ public class AgentChaguanController {
 
 	@Autowired
 	private MemberChaguanYushiService memberChaguanYushiService;
+
+	@Autowired
+	private ChaguanMemberApplyService chaguanMemberApplyService;
 
 	/**
 	 * 推广员申请开通茶馆
@@ -138,7 +142,8 @@ public class AgentChaguanController {
 			vo.setMsg("ChaguanHasYushiAccountAlreadyException");
 			return vo;
 		}
-		chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.SUCCESS);
+		apply = chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.SUCCESS);
+		chaguanApplyMsgService.chaguanApplyPass(apply);
 		return vo;
 	}
 
@@ -148,7 +153,8 @@ public class AgentChaguanController {
 	@RequestMapping("/apply_refuse")
 	public CommonVO applychaguan_refuse(String applyId) {
 		CommonVO vo = new CommonVO();
-		chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.FAIL);
+		ChaguanApply apply = chaguanApplyService.updateApplyStatus(applyId, ChaguanApplyStatus.FAIL);
+		chaguanApplyMsgService.chaguanApplyPass(apply);
 		return vo;
 	}
 
@@ -293,6 +299,25 @@ public class AgentChaguanController {
 			vo.setMsg("invalid token");
 		}
 		chaguanMemberDboService.chaguanMemberSet(memberId, chaguanId, payType, memberDesc);
+		return vo;
+	}
+
+	/**
+	 * 查询茶馆申请
+	 */
+	@RequestMapping("/chaguan_member_apply")
+	public CommonVO chaguanMemberApply(String token, String chaguanId, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+		}
+		ListPage listPage = chaguanMemberApplyService.findChaguanMemberApply(chaguanId, page, size);
+		Map data = new HashMap<>();
+		vo.setData(data);
+		data.put("listPage", listPage);
 		return vo;
 	}
 

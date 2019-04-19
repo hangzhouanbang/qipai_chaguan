@@ -20,4 +20,18 @@ public class ChaguanApplyMsgService {
 		mo.setData(apply);
 		chaguanApplySource.chaguanApply().send(MessageBuilder.withPayload(mo).build());
 	}
+
+	public void chaguanApplyPass(ChaguanApply apply) {
+		CommonMO mo = new CommonMO();
+		mo.setMsg("pass apply");
+		mo.setData(apply);
+		chaguanApplySource.chaguanApply().send(MessageBuilder.withPayload(mo).build());
+	}
+
+	public void chaguanApplyRefuse(ChaguanApply apply) {
+		CommonMO mo = new CommonMO();
+		mo.setMsg("refuse apply");
+		mo.setData(apply);
+		chaguanApplySource.chaguanApply().send(MessageBuilder.withPayload(mo).build());
+	}
 }
