@@ -5,7 +5,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.messaging.support.MessageBuilder;
 
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
-import com.anbang.qipai.chaguan.msg.channel.ChaguanSource;
+import com.anbang.qipai.chaguan.msg.channel.source.ChaguanSource;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
 
 @EnableBinding(ChaguanSource.class)

@@ -33,6 +33,12 @@ import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
 import com.highto.framework.web.page.ListPage;
 
+/**
+ * 茶馆商城
+ * 
+ * @author lsc
+ *
+ */
 @RestController
 @RequestMapping("/shop")
 public class ChaguanShopController {
@@ -111,6 +117,9 @@ public class ChaguanShopController {
 		return vo;
 	}
 
+	/**
+	 * 微信支付
+	 */
 	@RequestMapping("/buy_product_wx")
 	public CommonVO buyProduct_XW(String token, String productId, HttpServletRequest request) {
 		CommonVO vo = new CommonVO();

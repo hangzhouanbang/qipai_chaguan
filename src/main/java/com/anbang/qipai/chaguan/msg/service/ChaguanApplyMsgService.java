@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.messaging.support.MessageBuilder;
 
-import com.anbang.qipai.chaguan.msg.channel.ChaguanApplySource;
+import com.anbang.qipai.chaguan.msg.channel.source.ChaguanApplySource;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
 

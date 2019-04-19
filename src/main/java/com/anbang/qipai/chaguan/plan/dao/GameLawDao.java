@@ -5,10 +5,12 @@ import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
 
 public interface GameLawDao {
 
-	GameLaw findByGameAndName(Game game, String name);
-
 	void save(GameLaw law);
 
+	void update(GameLaw law);
+
 	void remove(String id);
+
+	GameLaw findByGameAndName(Game game, String name);
 
 }

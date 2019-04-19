@@ -22,4 +22,6 @@ public interface MemberChaguanYushiAccountDboDao {
 	void remove(String id);
 
 	MemberChaguanYushiAccountDbo findByAccountId(String accountId);
+
+	MemberChaguanYushiAccountDbo findByChaguanIdAndMemberId(String chaguanId, String memberId);
 }

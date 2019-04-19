@@ -17,6 +17,12 @@ import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
 import com.dml.accounting.InsufficientBalanceException;
 
+/**
+ * 茶馆玉石管理
+ * 
+ * @author lsc
+ *
+ */
 @RestController
 @RequestMapping("/chaguanyushi")
 public class ChaguanYushiController {
@@ -30,6 +36,9 @@ public class ChaguanYushiController {
 	@Autowired
 	private AgentAuthService agentAuthService;
 
+	/**
+	 * 推广员查询茶馆玉石
+	 */
 	@RequestMapping(value = "/query_chaguanyushiaccount")
 	public CommonVO queryAgentChaguanYushiAccount(String token) {
 		CommonVO vo = new CommonVO();
@@ -49,6 +58,9 @@ public class ChaguanYushiController {
 		return vo;
 	}
 
+	/**
+	 * 消耗推广员茶馆玉石
+	 */
 	@RequestMapping(value = "/withdraw")
 	public CommonVO withdraw(String agentId, int amount, String textSummary) {
 		CommonVO vo = new CommonVO();
@@ -68,6 +80,9 @@ public class ChaguanYushiController {
 		}
 	}
 
+	/**
+	 * 赠送推广员玉石
+	 */
 	@RequestMapping(value = "/givechaguanyushitoagent")
 	public CommonVO giveGoldToMember(String agentId, int amount, String textSummary) {
 		CommonVO vo = new CommonVO();

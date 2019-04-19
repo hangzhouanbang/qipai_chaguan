@@ -21,14 +21,6 @@ public class WzskLawsFB {
 	private String sxfd = "false";
 	private String gxjb = "false";
 
-	public WzskLawsFB() {
-		panshu = " ";
-		renshu = " ";
-		bx = " ";
-		chapai = " ";
-		fapai = " ";
-	}
-
 	public WzskLawsFB(List<String> lawNames) {
 		lawNames.forEach((lawName) -> {
 			if (lawName.equals("bj")) {// 八局
@@ -81,38 +73,6 @@ public class WzskLawsFB {
 
 			}
 		});
-	}
-
-	public int payForCreateRoom() {
-		int gold = 100;
-		if (panshu.equals("30")) {
-			gold = 200;
-		} else if (panshu.equals("16")) {
-			gold = 100;
-		} else if (panshu.equals("8")) {
-			gold = 50;
-		} else if (panshu.equals("4")) {
-			gold = 100;
-		} else {
-
-		}
-		return gold;
-	}
-
-	public int payForJoinRoom() {
-		int gold = 100;
-		if (panshu.equals("30")) {
-			gold = 200;
-		} else if (panshu.equals("16")) {
-			gold = 100;
-		} else if (panshu.equals("8")) {
-			gold = 50;
-		} else if (panshu.equals("4")) {
-			gold = 100;
-		} else {
-
-		}
-		return gold;
 	}
 
 	public String getPanshu() {

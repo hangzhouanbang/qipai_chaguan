@@ -83,4 +83,9 @@ public class MemberChaguanYushiService {
 	public MemberChaguanYushiAccountDbo findMemberChaguanYushiAccountDboByAccountId(String accountId) {
 		return memberChaguanYushiAccountDboDao.findByAccountId(accountId);
 	}
+
+	public MemberChaguanYushiAccountDbo findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(String chaguanId,
+			String memberId) {
+		return memberChaguanYushiAccountDboDao.findByChaguanIdAndMemberId(chaguanId, memberId);
+	}
 }

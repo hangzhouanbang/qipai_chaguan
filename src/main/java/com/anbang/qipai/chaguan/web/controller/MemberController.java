@@ -29,6 +29,12 @@ import com.anbang.qipai.chaguan.plan.service.MemberAuthService;
 import com.anbang.qipai.chaguan.web.vo.ChaguanVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 
+/**
+ * 玩家管理
+ * 
+ * @author lsc
+ *
+ */
 @RestController
 @RequestMapping("/member")
 public class MemberController {

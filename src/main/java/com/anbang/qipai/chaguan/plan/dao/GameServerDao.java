@@ -11,11 +11,12 @@ public interface GameServerDao {
 
 	void remove(String[] ids);
 
-	List<GameServer> findAll();
+	List<GameServer> findAllByGame(Game game);
 
-	List<GameServer> findByGame(Game game);
+	List<GameServer> findGameServersByIds(List<String> ids);
 
-	void updateGameServerState(List<String> ids, int gameServerStateStop);
+	void updateGameServerState(List<String> ids, int state);
 
 	List<GameServer> findServersByState(Game game, int state);
+
 }

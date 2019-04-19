@@ -12,39 +12,39 @@ import org.springframework.stereotype.Component;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
 import com.anbang.qipai.chaguan.plan.bean.game.GameServer;
 import com.anbang.qipai.chaguan.plan.dao.GameServerDao;
-import com.anbang.qipai.chaguan.plan.dao.mongodb.repository.GameServerRepository;
 
 @Component
 public class MongodbGameServerDao implements GameServerDao {
 
 	@Autowired
-	private MongoTemplate mognoTempalte;
-
-	@Autowired
-	private GameServerRepository repository;
+	private MongoTemplate mongoTemplate;
 
 	@Override
 	public void save(GameServer gameServer) {
-		mognoTempalte.insert(gameServer);
+		mongoTemplate.insert(gameServer);
 	}
 
 	@Override
 	public void remove(String[] ids) {
 		Object[] serverIds = ids;
 		Query query = new Query(Criteria.where("id").in(serverIds));
-		mognoTempalte.remove(query, GameServer.class);
+		mongoTemplate.remove(query, GameServer.class);
 	}
 
 	@Override
-	public List<GameServer> findAll() {
-		return repository.findAll();
-	}
-
-	@Override
-	public List<GameServer> findByGame(Game game) {
+	public List<GameServer> findAllByGame(Game game) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("game").is(game));
-		return mognoTempalte.find(query, GameServer.class);
+		if (game != null) {
+			query.addCriteria(Criteria.where("game").is(game));
+		}
+		return mongoTemplate.find(query, GameServer.class);
+	}
+
+	@Override
+	public List<GameServer> findGameServersByIds(List<String> ids) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("id").in(ids));
+		return this.mongoTemplate.find(query, GameServer.class);
 	}
 
 	@Override
@@ -53,16 +53,15 @@ public class MongodbGameServerDao implements GameServerDao {
 		query.addCriteria(Criteria.where("id").in(ids));
 		Update update = new Update();
 		update.set("state", state);
-		this.mognoTempalte.updateMulti(query, update, GameServer.class);
+		this.mongoTemplate.updateMulti(query, update, GameServer.class);
 	}
 
 	@Override
 	public List<GameServer> findServersByState(Game game, int state) {
-		// 初始状态没有state变量
 		Query query = new Query();
 		query.addCriteria(Criteria.where("game").is(game).orOperator(new Criteria("state").is(state),
 				new Criteria("state").exists(false)));
-		return this.mognoTempalte.find(query, GameServer.class);
+		return this.mongoTemplate.find(query, GameServer.class);
 	}
 
 }

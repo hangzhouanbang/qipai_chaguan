@@ -37,6 +37,12 @@ import com.dml.accounting.AccountingRecord;
 import com.dml.accounting.InsufficientBalanceException;
 import com.highto.framework.web.page.ListPage;
 
+/**
+ * 推广员茶馆管理
+ * 
+ * @author lsc
+ *
+ */
 @RestController
 @RequestMapping("/agentchaguan")
 public class AgentChaguanController {

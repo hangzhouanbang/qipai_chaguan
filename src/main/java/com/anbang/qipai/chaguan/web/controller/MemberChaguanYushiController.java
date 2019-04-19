@@ -23,6 +23,12 @@ import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
 import com.dml.accounting.InsufficientBalanceException;
 
+/**
+ * 玩家茶馆玉石管理
+ * 
+ * @author lsc
+ *
+ */
 @RestController
 @RequestMapping("/memberchaguanyushi")
 public class MemberChaguanYushiController {
@@ -45,6 +51,9 @@ public class MemberChaguanYushiController {
 	@Autowired
 	private MemberDboService memberDboService;
 
+	/**
+	 * 玩家充值确认
+	 */
 	@RequestMapping("/recharge_confirm")
 	public CommonVO rechargeConfirm(String token, String memberId, int amount) {
 		CommonVO vo = new CommonVO();
@@ -72,6 +81,9 @@ public class MemberChaguanYushiController {
 		return vo;
 	}
 
+	/**
+	 * 给玩家充值茶馆玉石
+	 */
 	@RequestMapping("/recharge_member_chaguanyushi")
 	public CommonVO rechargeMemberChaguanYushi(String token, String memberId, int amount) {
 		CommonVO vo = new CommonVO();

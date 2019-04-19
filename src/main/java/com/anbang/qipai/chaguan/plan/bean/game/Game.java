@@ -9,5 +9,13 @@ public enum Game {
 
 	dianpaoMajiang,
 
-	wenzhouShuangkou
+	wenzhouShuangkou,
+
+	doudizhu,
+
+	daboluo,
+
+	paodekuai,
+
+	chayuanShuangkou
 }
