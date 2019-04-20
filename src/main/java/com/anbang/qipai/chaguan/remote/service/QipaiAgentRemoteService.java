@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.anbang.qipai.chaguan.remote.vo.CommonRemoteVO;
 
-@FeignClient("qipai-agent")
+@FeignClient("qipai-agents")
 public interface QipaiAgentRemoteService {
 
 	@RequestMapping(value = "/auth/trytoken")

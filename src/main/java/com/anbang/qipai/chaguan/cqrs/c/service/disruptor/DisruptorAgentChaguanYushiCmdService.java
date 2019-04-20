@@ -13,7 +13,7 @@ import com.dml.accounting.InsufficientBalanceException;
 import com.highto.framework.concurrent.DeferredResult;
 import com.highto.framework.ddd.CommonCommand;
 
-@Component(value = "AgentChaguanYushiCmdService")
+@Component(value = "agentChaguanYushiCmdService")
 public class DisruptorAgentChaguanYushiCmdService extends DisruptorCmdServiceBase
 		implements AgentChaguanYushiCmdService {
 

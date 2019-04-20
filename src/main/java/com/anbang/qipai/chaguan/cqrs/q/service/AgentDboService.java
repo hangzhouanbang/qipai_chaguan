@@ -7,6 +7,7 @@ import com.anbang.qipai.chaguan.cqrs.q.dao.AgentDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.AuthorizationDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AuthorizationDbo;
+import com.anbang.qipai.chaguan.plan.bean.AgentType;
 
 @Service
 public class AgentDboService {
@@ -33,8 +34,12 @@ public class AgentDboService {
 		agentDboDao.addAgentDbo(agentDbo);
 	}
 
-	public void updateBaseInfo(String agentId, String nickname, String headimgurl, String gender) {
-		agentDboDao.updateBaseInfo(agentId, nickname, headimgurl, gender);
+	public void updateAgnetInfoAndAgentAuth(AgentDbo agent) {
+		agentDboDao.updateAgentAuth(agent.getId(), agent.isAgentAuth());
+	}
+
+	public void updateAgentDboType(String agentId, AgentType type) {
+		agentDboDao.updateAgentDboType(agentId, type);
 	}
 
 	public AgentDbo findAgentDboByAgentId(String agentId) {
@@ -43,6 +48,10 @@ public class AgentDboService {
 
 	public void updateAgentAuth(String agentId, boolean agentAuth) {
 		agentDboDao.updateAgentAuth(agentId, agentAuth);
+	}
+
+	public void updateAgentInviteMemberNum(String agentId, int inviteMemberNum) {
+		agentDboDao.updateAgentInviteMemberNum(agentId, inviteMemberNum);
 	}
 
 	public void updateAgentState(String agentId, String state) {

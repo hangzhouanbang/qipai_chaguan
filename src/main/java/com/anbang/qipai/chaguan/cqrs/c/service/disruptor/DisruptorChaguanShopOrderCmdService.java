@@ -10,7 +10,7 @@ import com.anbang.qipai.chaguan.cqrs.c.service.impl.ChaguanShopOrderCmdServiceIm
 import com.highto.framework.concurrent.DeferredResult;
 import com.highto.framework.ddd.CommonCommand;
 
-@Component(value = "ChaguanShopOrderCmdService")
+@Component(value = "chaguanShopOrderCmdService")
 public class DisruptorChaguanShopOrderCmdService extends DisruptorCmdServiceBase implements ChaguanShopOrderCmdService {
 
 	@Autowired

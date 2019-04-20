@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.anbang.qipai.chaguan.cqrs.q.dao.AgentDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
+import com.anbang.qipai.chaguan.plan.bean.AgentType;
 
 @Component
 public class MongodbAgentDboDao implements AgentDboDao {
@@ -54,6 +55,22 @@ public class MongodbAgentDboDao implements AgentDboDao {
 		query.addCriteria(Criteria.where("id").is(agentId));
 		Update update = new Update();
 		update.set("state", state);
+		mongoTemplate.updateFirst(query, update, AgentDbo.class);
+	}
+
+	@Override
+	public void updateAgentDboType(String agentId, AgentType type) {
+		Query query = new Query(Criteria.where("id").is(agentId));
+		Update update = new Update();
+		update.set("agentType", type);
+		mongoTemplate.updateFirst(query, update, AgentDbo.class);
+	}
+
+	@Override
+	public void updateAgentInviteMemberNum(String agentId, int inviteMemberNum) {
+		Query query = new Query(Criteria.where("id").is(agentId));
+		Update update = new Update();
+		update.set("inviteMemberNum", inviteMemberNum);
 		mongoTemplate.updateFirst(query, update, AgentDbo.class);
 	}
 

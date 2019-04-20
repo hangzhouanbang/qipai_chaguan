@@ -203,6 +203,11 @@ public class AgentChaguanController {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
 		}
+		if (chaguanApplyService.fingChaguanApplyByAgentIdAndStatus(agentId, ChaguanApplyStatus.SUCCESS) == null) {
+			vo.setSuccess(false);
+			vo.setMsg("can not create");
+			return vo;
+		}
 		AgentDbo agent = agentDboService.findAgentDboByAgentId(agentId);
 		String newChaguanId = chaguanCmdService.createNewChaguanId(System.currentTimeMillis());
 		ChaguanDbo dbo = new ChaguanDbo();

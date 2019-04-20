@@ -125,6 +125,20 @@ spring:
             concurrency: 1
             partitioned: false
           contentType: application/json
+        members:
+          destination: members
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        agents:
+          destination: agents
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
         gameServer:
           destination: gameServer
           group: qipai-chaguan

@@ -6,6 +6,6 @@ import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 
 public interface GameTableRepository extends MongoRepository<GameTable, String> {
 
-	GameTable findByNoAndFinished(String no, boolean finished);
+	GameTable findByNoAndState(String no, String state);
 
 }

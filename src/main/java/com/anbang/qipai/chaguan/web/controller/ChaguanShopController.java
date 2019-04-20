@@ -155,8 +155,7 @@ public class ChaguanShopController {
 			vo.setMsg("invalid productId");
 			return vo;
 		}
-		AuthorizationDbo openidAuthDbo = agentDboService.findThirdAuthorizationDboByAgentId(agentId,
-				"open.weixin.app.qipai");
+		AuthorizationDbo openidAuthDbo = agentDboService.findThirdAuthorizationDboByAgentId(agentId, "open.weixin");
 		if (openidAuthDbo == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid openId");
