@@ -12,6 +12,7 @@ import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
@@ -35,6 +36,9 @@ public class ChaguanYushiController {
 
 	@Autowired
 	private AgentAuthService agentAuthService;
+
+	@Autowired
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
 
 	/**
 	 * 推广员查询茶馆玉石
@@ -68,6 +72,7 @@ public class ChaguanYushiController {
 			AccountingRecord rcd = agentChaguanYushiCmdService.withdraw(agentId, amount, textSummary,
 					System.currentTimeMillis());
 			ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(rcd, agentId);
+			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
 			return vo;
 		} catch (InsufficientBalanceException e) {
 			vo.setSuccess(false);
@@ -90,6 +95,7 @@ public class ChaguanYushiController {
 			AccountingRecord rcd = agentChaguanYushiCmdService.giveChaguanyushiToAgent(agentId, amount, textSummary,
 					System.currentTimeMillis());
 			ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(rcd, agentId);
+			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
 			return vo;
 		} catch (AgentNotFoundException e) {
 			vo.setSuccess(false);

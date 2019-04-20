@@ -24,9 +24,11 @@ public class MongodbAuthorizationDboDao implements AuthorizationDboDao {
 	}
 
 	@Override
-	public AuthorizationDbo findAuthorizationDboByAgentId(String agentId) {
+	public AuthorizationDbo findAuthorizationDboByAgentId(String agentId, String publisher, boolean thirdAuth) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("agentId").is(agentId));
+		query.addCriteria(Criteria.where("publisher").is(publisher));
+		query.addCriteria(Criteria.where("thirdAuth").is(thirdAuth));
 		return mongoTemplate.findOne(query, AuthorizationDbo.class);
 	}
 

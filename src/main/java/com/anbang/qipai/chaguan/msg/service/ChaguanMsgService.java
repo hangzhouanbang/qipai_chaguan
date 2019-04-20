@@ -20,4 +20,11 @@ public class ChaguanMsgService {
 		mo.setData(dbo);
 		chaguanSource.chaguan().send(MessageBuilder.withPayload(mo).build());
 	}
+
+	public void updateChaguan(ChaguanDbo dbo) {
+		CommonMO mo = new CommonMO();
+		mo.setMsg("update chaguan");
+		mo.setData(dbo);
+		chaguanSource.chaguan().send(MessageBuilder.withPayload(mo).build());
+	}
 }

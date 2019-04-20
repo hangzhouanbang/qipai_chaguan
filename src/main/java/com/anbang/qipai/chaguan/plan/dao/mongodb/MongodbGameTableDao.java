@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import com.anbang.qipai.chaguan.conf.GameTableStateConfig;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 import com.anbang.qipai.chaguan.plan.dao.GameTableDao;
@@ -68,9 +69,10 @@ public class MongodbGameTableDao implements GameTableDao {
 	}
 
 	@Override
-	public List<GameTable> findGameTableByChaguanIdAndState(String chaguanId, String state, int page, int size) {
+	public List<GameTable> findGameTableByChaguanId(String chaguanId, int page, int size) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("chaguanId").is(chaguanId).andOperator(Criteria.where("state").is(state)));
+		query.addCriteria(Criteria.where("chaguanId").is(chaguanId)
+				.andOperator(Criteria.where("state").in(GameTableStateConfig.PLAYING, GameTableStateConfig.WAITING)));
 		query.skip((page - 1) * size);
 		query.limit(size);
 		return mongoTemplate.find(query, GameTable.class);

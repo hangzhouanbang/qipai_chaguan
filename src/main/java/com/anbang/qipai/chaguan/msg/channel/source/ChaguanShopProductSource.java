@@ -3,7 +3,9 @@ package com.anbang.qipai.chaguan.msg.channel.source;
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
-public interface DianpaoGameRoomSource {
+public interface ChaguanShopProductSource {
+
 	@Output
-	MessageChannel dianpaoGameRoom();
+	MessageChannel chaguanShopProduct();
+
 }

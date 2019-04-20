@@ -22,6 +22,8 @@ import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberDboService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanMemberMsgService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanMsgService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberApply;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberApplyState;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberPayType;
@@ -67,6 +69,12 @@ public class MemberController {
 
 	@Autowired
 	private ChaguanYushiService chaguanYushiService;
+
+	@Autowired
+	private ChaguanMemberMsgService chaguanMemberMsgService;
+
+	@Autowired
+	private ChaguanMsgService chaguanMsgService;
 
 	/**
 	 * 查找玩家茶馆
@@ -200,8 +208,10 @@ public class MemberController {
 		dbo.setJoinTime(System.currentTimeMillis());
 		dbo.setPayType(ChaguanMemberPayType.SELF);
 		chaguanMemberDboService.addChaguanMemberDbo(dbo);
+		chaguanMemberMsgService.recordChaguanMember(dbo);
 		// 更新茶馆玩家人数
-		chaguanDboService.updateChaguanDboMemberNum(chaguanDbo.getId());
+		chaguanDbo = chaguanDboService.updateChaguanDboMemberNum(chaguanDbo.getId());
+		chaguanMsgService.updateChaguan(chaguanDbo);
 		// 修改申请状态
 		chaguanMemberApplyService.chaguanMemberApplyPass(applyId);
 		return vo;

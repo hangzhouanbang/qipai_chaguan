@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anbang.qipai.chaguan.conf.PayTypeConfig;
-import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.AgentNotFoundException;
 import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.ChaguanShopOrderCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
@@ -21,6 +20,9 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.AuthorizationDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanShopOrderMsgService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanShopProductMsgService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanShopOrder;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanShopProduct;
 import com.anbang.qipai.chaguan.plan.bean.RewardType;
@@ -67,13 +69,23 @@ public class ChaguanShopController {
 	@Autowired
 	private ChaguanYushiService chaguanYushiService;
 
+	@Autowired
+	private ChaguanShopOrderMsgService chaguanShopOrderMsgService;
+
+	@Autowired
+	private ChaguanShopProductMsgService chaguanShopProductMsgService;
+
+	@Autowired
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
+
 	/**
 	 * 添加商品
 	 */
 	@RequestMapping("/product_add")
 	public CommonVO addProduct(ChaguanShopProduct product) {
 		CommonVO vo = new CommonVO();
-		chaguanShopProductService.addChaguanShopProduct(product);
+		ChaguanShopProduct p = chaguanShopProductService.addChaguanShopProduct(product);
+		chaguanShopProductMsgService.addChaguanShopProduct(p);
 		return vo;
 	}
 
@@ -83,7 +95,8 @@ public class ChaguanShopController {
 	@RequestMapping("/product_update")
 	public CommonVO updateProduct(ChaguanShopProduct product) {
 		CommonVO vo = new CommonVO();
-		chaguanShopProductService.updateChaguanShopProduct(product);
+		ChaguanShopProduct p = chaguanShopProductService.updateChaguanShopProduct(product);
+		chaguanShopProductMsgService.updateChaguanShopProduct(p);
 		return vo;
 	}
 
@@ -94,6 +107,7 @@ public class ChaguanShopController {
 	public CommonVO removeProduct(String[] productIds) {
 		CommonVO vo = new CommonVO();
 		chaguanShopProductService.removeChaguanShopProducts(productIds);
+		chaguanShopProductMsgService.removeChaguanShopProduct(productIds);
 		return vo;
 	}
 
@@ -141,7 +155,8 @@ public class ChaguanShopController {
 			vo.setMsg("invalid productId");
 			return vo;
 		}
-		AuthorizationDbo openidAuthDbo = agentDboService.findThirdAuthorizationDboByAgentId(agentId);
+		AuthorizationDbo openidAuthDbo = agentDboService.findThirdAuthorizationDboByAgentId(agentId,
+				"open.weixin.app.qipai");
 		if (openidAuthDbo == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid openId");
@@ -151,9 +166,9 @@ public class ChaguanShopController {
 		ChaguanShopOrder order = chaguanShopOrderService.addChaguanShopOrder(agentId, agent.getNickname(), agentId,
 				agent.getNickname(), productId, product.getName(), product.getPrice(), product.getRewardType(),
 				product.getRewardNum(), 1, PayTypeConfig.WECHATPAY, reqIP);
-		// TODO Kafka消息 创建订单
 		try {
 			chaguanShopOrderCmdService.createOrder(order.getId(), agentId, System.currentTimeMillis());
+			chaguanShopOrderMsgService.createChaguanShopOrder(order);
 			Map<String, String> resultMap = wxpayService.createOrder(order, openidAuthDbo.getUuid());
 			if (resultMap == null) {
 				vo.setSuccess(false);
@@ -197,25 +212,25 @@ public class ChaguanShopController {
 						|| "PAYERROR".equals(order.getStatus())) {
 					return "<xml><return_code><![CDATA[SUCCESS]]></return_code><return_msg><![CDATA[OK]]></return_msg></xml>";
 				}
-				ChaguanShopOrder finishedOrder = chaguanShopOrderService.orderFinished(out_trade_no, transaction_id,
-						trade_state, System.currentTimeMillis());
-				// TODO Kafka消息 订单完成
 				try {
+					chaguanShopOrderCmdService.finishOrder(order.getId());
+					ChaguanShopOrder finishedOrder = chaguanShopOrderService.orderFinished(out_trade_no, transaction_id,
+							trade_state, System.currentTimeMillis());
+					chaguanShopOrderMsgService.finishChaguanShopOrder(finishedOrder);
 					// 交易成功
 					if ("SUCCESS".equals(trade_state)) {
-						// TODO Kafka消息 推广员消费
 						if (finishedOrder.getRewardType().equals(RewardType.chaguanyushi)) {
 							AccountingRecord rcd = agentChaguanYushiCmdService.giveChaguanyushiToAgent(
 									finishedOrder.getReceiverId(), (int) finishedOrder.getRewardNum(),
 									"BUY CHAGUANYUSHI", System.currentTimeMillis());
 							ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(rcd,
 									finishedOrder.getReceiverId());
-							// TODO Kafka消息 流水记录
+							chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
 						}
 					} else {
 
 					}
-				} catch (AgentNotFoundException e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				return "<xml><return_code><![CDATA[SUCCESS]]></return_code></xml>";
@@ -247,24 +262,24 @@ public class ChaguanShopController {
 				vo.setSuccess(true);
 				return vo;
 			}
-			ChaguanShopOrder finishedOrder = chaguanShopOrderService.orderFinished(out_trade_no, transaction_id,
-					trade_state, System.currentTimeMillis());
-			// TODO Kafka消息 订单完成
 			try {
+				chaguanShopOrderCmdService.finishOrder(order.getId());
+				ChaguanShopOrder finishedOrder = chaguanShopOrderService.orderFinished(out_trade_no, transaction_id,
+						trade_state, System.currentTimeMillis());
+				chaguanShopOrderMsgService.finishChaguanShopOrder(finishedOrder);
 				// 交易成功
 				if ("SUCCESS".equals(trade_state)) {
-					// TODO Kafka消息 推广员消费
 					if (finishedOrder.getRewardType().equals(RewardType.chaguanyushi)) {
 						AccountingRecord rcd = agentChaguanYushiCmdService.giveChaguanyushiToAgent(
 								finishedOrder.getReceiverId(), (int) finishedOrder.getRewardNum(), "BUY CHAGUANYUSHI",
 								System.currentTimeMillis());
 						ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(rcd, finishedOrder.getReceiverId());
-						// TODO Kafka消息 流水记录
+						chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
 					}
 				} else {
 
 				}
-			} catch (AgentNotFoundException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			vo.setSuccess(true);

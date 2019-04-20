@@ -17,16 +17,22 @@ import com.anbang.qipai.chaguan.cqrs.c.service.ChaguanCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanMemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanStatus;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.msg.service.ChaguanApplyMsgService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanMemberMsgService;
 import com.anbang.qipai.chaguan.msg.service.ChaguanMsgService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanYushiRecordMsgService;
+import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApply;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanApplyStatus;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
@@ -86,6 +92,15 @@ public class AgentChaguanController {
 
 	@Autowired
 	private ChaguanMemberApplyService chaguanMemberApplyService;
+
+	@Autowired
+	private ChaguanMemberMsgService chaguanMemberMsgService;
+
+	@Autowired
+	private MemberChaguanYushiRecordMsgService memberChaguanYushiRecordMsgService;
+
+	@Autowired
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
 
 	/**
 	 * 推广员申请开通茶馆
@@ -267,7 +282,8 @@ public class AgentChaguanController {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
 		}
-		chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
+		ChaguanDbo dbo = chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
+		chaguanMsgService.updateChaguan(dbo);
 		return vo;
 	}
 
@@ -282,7 +298,9 @@ public class AgentChaguanController {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
 		}
-		chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId, chaguanId, true);
+		ChaguanMemberDbo member = chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId,
+				chaguanId, true);
+		chaguanMemberMsgService.removeChaguanMember(member);
 		return vo;
 	}
 
@@ -298,7 +316,8 @@ public class AgentChaguanController {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
 		}
-		chaguanMemberDboService.chaguanMemberSet(memberId, chaguanId, payType, memberDesc);
+		ChaguanMemberDbo member = chaguanMemberDboService.chaguanMemberSet(memberId, chaguanId, payType, memberDesc);
+		chaguanMemberMsgService.setChaguanMember(member);
 		return vo;
 	}
 
@@ -358,11 +377,14 @@ public class AgentChaguanController {
 			AccountingRecord agentRecord = agentChaguanYushiCmdService.withdraw(agentId,
 					memberChaguanYushiAccountDbo.getBalance(),
 					"agent clear:" + memberChaguanYushiAccountDbo.getMemberId(), System.currentTimeMillis());
-			chaguanYushiService.withdraw(agentRecord, agentId);
+			ChaguanYushiRecordDbo cyrd = chaguanYushiService.withdraw(agentRecord, agentId);
+			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(cyrd);
 			AccountingRecord memberRecord = memberChaguanYushiCmdService.giveYushiToMemberByAgent(
 					memberChaguanYushiAccountDbo.getMemberId(), agentId, -memberChaguanYushiAccountDbo.getBalance(),
 					"agent clear", System.currentTimeMillis());
-			memberChaguanYushiService.withdraw(memberRecord, memberChaguanYushiAccountDbo.getMemberId(), agentId);
+			MemberChaguanYushiRecordDbo mcyrd = memberChaguanYushiService.withdraw(memberRecord,
+					memberChaguanYushiAccountDbo.getMemberId(), agentId);
+			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(mcyrd);
 		} catch (MemberNotFoundException e) {
 			vo.setSuccess(false);
 			vo.setMsg("MemberNotFoundException");

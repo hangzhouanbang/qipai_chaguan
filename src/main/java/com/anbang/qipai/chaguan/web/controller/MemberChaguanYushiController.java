@@ -18,6 +18,8 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberDboService;
+import com.anbang.qipai.chaguan.msg.service.ChaguanYushiRecordMsgService;
+import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.dml.accounting.AccountingRecord;
@@ -50,6 +52,12 @@ public class MemberChaguanYushiController {
 
 	@Autowired
 	private MemberDboService memberDboService;
+
+	@Autowired
+	private MemberChaguanYushiRecordMsgService memberChaguanYushiRecordMsgService;
+
+	@Autowired
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
 
 	/**
 	 * 玩家充值确认
@@ -101,14 +109,14 @@ public class MemberChaguanYushiController {
 		}
 		long accoutingTime = System.currentTimeMillis();
 		try {
-			AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, amount, "recharge member",
-					accoutingTime);
+			AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, amount,
+					"recharge member:" + memberId, accoutingTime);
 			ChaguanYushiRecordDbo agentRecord = chaguanYushiService.withdraw(agentAr, agentId);
-			// TODO Kafka发消息 推广员充值记录
+			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(agentRecord);
 			AccountingRecord memberAr = memberChaguanYushiCmdService.giveYushiToMemberByAgent(memberId, agentId, amount,
 					"agent recharge", accoutingTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
-			// TODO Kafka发消息 玩家充值记录
+			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (AgentNotFoundException e) {
 			vo.setSuccess(false);
 			vo.setMsg("AgentNotFoundException");

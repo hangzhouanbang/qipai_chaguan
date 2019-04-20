@@ -21,8 +21,8 @@ public class AgentDboService {
 		return authorizationDboDao.findAuthorizationDboByPublisherAndUuid(publisher, uuid);
 	}
 
-	public AuthorizationDbo findThirdAuthorizationDboByAgentId(String agentId) {
-		return authorizationDboDao.findAuthorizationDboByAgentId(agentId);
+	public AuthorizationDbo findThirdAuthorizationDboByAgentId(String agentId, String publisher) {
+		return authorizationDboDao.findAuthorizationDboByAgentId(agentId, publisher, true);
 	}
 
 	public void addAuthorizationDbo(AuthorizationDbo authDbo) {

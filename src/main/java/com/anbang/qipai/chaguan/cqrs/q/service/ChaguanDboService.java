@@ -33,12 +33,14 @@ public class ChaguanDboService {
 		return new ListPage(chaguanDboList, page, size, (int) amount);
 	}
 
-	public void updateChaguanBaseInfo(String chaguanId, String name, String desc) {
+	public ChaguanDbo updateChaguanBaseInfo(String chaguanId, String name, String desc) {
 		chaguanDboDao.updateChaguanBaseInfo(chaguanId, name, desc);
+		return chaguanDboDao.findById(chaguanId);
 	}
 
-	public void updateChaguanDboMemberNum(String chaguanId) {
+	public ChaguanDbo updateChaguanDboMemberNum(String chaguanId) {
 		long memberNum = chaguanMemberDboDao.countAmountByChaguanId(chaguanId);
 		chaguanDboDao.updateChaguanDboMemberNum(chaguanId, (int) memberNum);
+		return chaguanDboDao.findById(chaguanId);
 	}
 }

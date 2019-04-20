@@ -600,8 +600,7 @@ public class GameService {
 
 	public List<GameTableVO> findGameTableByChaguanId(String chaguanId, int page, int size) {
 		List<GameTableVO> tableList = new ArrayList<>();
-		List<GameTable> gameTableList = gameTableDao.findGameTableByChaguanIdAndState(chaguanId,
-				GameTableStateConfig.WAITING, page, size);
+		List<GameTable> gameTableList = gameTableDao.findGameTableByChaguanId(chaguanId, page, size);
 		for (GameTable gameTable : gameTableList) {
 			GameTableVO table = new GameTableVO();
 			table.setChaguanId(gameTable.getChaguanId());

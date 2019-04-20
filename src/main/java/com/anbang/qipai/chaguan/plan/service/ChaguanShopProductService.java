@@ -15,12 +15,14 @@ public class ChaguanShopProductService {
 	@Autowired
 	private ChaguanShopProductDao chaguanShopProductDao;
 
-	public void addChaguanShopProduct(ChaguanShopProduct product) {
+	public ChaguanShopProduct addChaguanShopProduct(ChaguanShopProduct product) {
 		chaguanShopProductDao.addChaguanShopProduct(product);
+		return chaguanShopProductDao.findById(product.getId());
 	}
 
-	public void updateChaguanShopProduct(ChaguanShopProduct product) {
+	public ChaguanShopProduct updateChaguanShopProduct(ChaguanShopProduct product) {
 		chaguanShopProductDao.updateChaguanShopProduct(product);
+		return chaguanShopProductDao.findById(product.getId());
 	}
 
 	public void removeChaguanShopProducts(String[] productIds) {

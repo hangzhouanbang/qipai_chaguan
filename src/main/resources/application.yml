@@ -22,12 +22,249 @@ spring:
                   ms: 5
                 batch:
                   size: 16384
+          chaguan:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          chaguanMember:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          chaguanYushiRecord:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          memberChaguanYushiRecord:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          chaguanShopOrder:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          chaguanShopProduct:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
       bindings:
         chaguanApply:
           destination: chaguanApply
           contentType: application/json
           producer:
             partitionCount: 1
+        chaguan:
+          destination: chaguan
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        chaguanMember:
+          destination: chaguanMember
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        chaguanYushiRecord:
+          destination: chaguanYushiRecord
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        memberChaguanYushiRecord:
+          destination: memberChaguanYushiRecord
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        chaguanShopOrder:
+          destination: chaguanShopOrder
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        chaguanShopProduct:
+          destination: chaguanShopProduct
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        authorization:
+          destination: authorization
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        gameServer:
+          destination: gameServer
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        memberLoginLimitRecord:
+          destination: memberLoginLimitRecord
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        chayuanShuangkouGame:
+          destination: chayuanShuangkouGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        chayuanShuangkouResult:
+          destination: chayuanShuangkouResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        daboluoGame:
+          destination: daboluoGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        daboluoResult:
+          destination: daboluoResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        dianpaoMajiangGame:
+          destination: dianpaoMajiangGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        dianpaoMajiangResult:
+          destination: dianpaoMajiangResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        doudizhuGame:
+          destination: doudizhuGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        doudizhuResult:
+          destination: doudizhuResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        fangpaoMajiangGame:
+          destination: fangpaoMajiangGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        fangpaoMajiangResult:
+          destination: fangpaoMajiangResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        paodekuaiGame:
+          destination: paodekuaiGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        paodekuaiResult:
+          destination: paodekuaiResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        ruianMajiangGame:
+          destination: ruianMajiangGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        ruianMajiangResult:
+          destination: ruianMajiangResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wenzhouMajiangGame:
+          destination: wenzhouMajiangGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wenzhouMajiangResult:
+          destination: wenzhouMajiangResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wenzhouShuangkouGame:
+          destination: wenzhouShuangkouGame
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
+        wenzhouShuangkouResult:
+          destination: wenzhouShuangkouResult
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
   application:
     name: qipai-chaguan
 server:

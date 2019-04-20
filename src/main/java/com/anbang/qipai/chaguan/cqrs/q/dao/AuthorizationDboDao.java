@@ -6,7 +6,7 @@ public interface AuthorizationDboDao {
 
 	AuthorizationDbo findAuthorizationDboByPublisherAndUuid(String publisher, String uuid);
 
-	AuthorizationDbo findAuthorizationDboByAgentId(String agentId);
+	AuthorizationDbo findAuthorizationDboByAgentId(String agentId, String publisher, boolean thirdAuth);
 
 	void addAuthorizationDbo(AuthorizationDbo authDbo);
 }
