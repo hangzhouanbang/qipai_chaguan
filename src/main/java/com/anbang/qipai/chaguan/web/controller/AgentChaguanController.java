@@ -293,6 +293,17 @@ public class AgentChaguanController {
 	}
 
 	/**
+	 * 修改茶馆基本信息，后台rpc
+	 */
+	@RequestMapping("/chaguan_update_rpc")
+	public CommonVO chaguan_update_rpc(String chaguanId, String name, String desc) {
+		CommonVO vo = new CommonVO();
+		ChaguanDbo dbo = chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
+		chaguanMsgService.updateChaguan(dbo);
+		return vo;
+	}
+
+	/**
 	 * 移除茶馆成员
 	 */
 	@RequestMapping("/chaguan_member_remove")
@@ -306,6 +317,22 @@ public class AgentChaguanController {
 		ChaguanMemberDbo member = chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId,
 				chaguanId, true);
 		chaguanMemberMsgService.removeChaguanMember(member);
+		ChaguanDbo dbo = chaguanDboService.updateChaguanDboMemberNum(chaguanId);
+		chaguanMsgService.updateChaguan(dbo);
+		return vo;
+	}
+
+	/**
+	 * 移除茶馆成员，后台rpc
+	 */
+	@RequestMapping("/chaguan_member_remove_rpc")
+	public CommonVO chaguan_member_remove_rpc(String chaguanId, String memberId) {
+		CommonVO vo = new CommonVO();
+		ChaguanMemberDbo member = chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId,
+				chaguanId, true);
+		chaguanMemberMsgService.removeChaguanMember(member);
+		ChaguanDbo dbo = chaguanDboService.updateChaguanDboMemberNum(chaguanId);
+		chaguanMsgService.updateChaguan(dbo);
 		return vo;
 	}
 

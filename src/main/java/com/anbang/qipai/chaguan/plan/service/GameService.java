@@ -50,6 +50,16 @@ public class GameService {
 	@Autowired
 	private MemberGameTableDao memberGameTableDao;
 
+	public GameServer getRandomGameServer(Game game) throws NoServerAvailableForGameException {
+		List<GameServer> allServers = gameServerDao.findServersByState(game, GameService.GAME_SERVER_STATE_RUNNING);
+		if (allServers == null || allServers.isEmpty()) {
+			throw new NoServerAvailableForGameException();
+		}
+		Random r = new Random();
+		GameServer gameServer = allServers.get(r.nextInt(allServers.size()));
+		return gameServer;
+	}
+
 	/**
 	 * 创建瑞安麻将房间
 	 */
@@ -514,6 +524,9 @@ public class GameService {
 
 	public void gamePlayerQuitQame(Game game, String serverGameId, String playerId) {
 		memberGameTableDao.remove(game, serverGameId, playerId);
+		if (memberGameTableDao.countMemberByGameAndServerGameId(game, serverGameId) == 0) {
+			gameTableDao.updateStateGameTable(game, serverGameId, GameTableStateConfig.FINISH);
+		}
 	}
 
 	public void onlineGameServer(GameServer gameServer) {
@@ -620,6 +633,7 @@ public class GameService {
 				player.setHeadimgurl(memberGameTable.getHeadimgurl());
 				playerList.add(player);
 			}
+			tableList.add(table);
 		}
 		return tableList;
 	}

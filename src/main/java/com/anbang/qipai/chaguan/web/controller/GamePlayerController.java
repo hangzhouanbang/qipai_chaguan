@@ -113,7 +113,7 @@ public class GamePlayerController {
 		RamjLawsFB fb = new RamjLawsFB(lawNames);
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("difen", fb.getDifen());
 		req.param("taishu", fb.getTaishu());
@@ -192,7 +192,7 @@ public class GamePlayerController {
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		FpmjLawsFB fb = new FpmjLawsFB(lawNames);
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -274,7 +274,7 @@ public class GamePlayerController {
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		WzmjLawsFB fb = new WzmjLawsFB(lawNames);
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -285,6 +285,7 @@ public class GamePlayerController {
 		req.param("caishenqian", fb.getCaishenqian());
 		req.param("shaozhongfa", fb.getShaozhongfa());
 		req.param("lazila", fb.getLazila());
+		req.param("queyise", fb.getQueyise());
 		Map resData;
 		try {
 			ContentResponse res = req.send();
@@ -359,7 +360,7 @@ public class GamePlayerController {
 		// 游戏服务器rpc，需要手动httpclientrpc
 		DpmjLawsFB fb = new DpmjLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -447,7 +448,7 @@ public class GamePlayerController {
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -536,7 +537,7 @@ public class GamePlayerController {
 		// 游戏服务器rpc，需要手动httpclientrpc
 		DdzLawsFB fb = new DdzLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -620,7 +621,7 @@ public class GamePlayerController {
 		// 游戏服务器rpc，需要手动httpclientrpc
 		DblLawsFB fb = new DblLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -696,7 +697,7 @@ public class GamePlayerController {
 		// 游戏服务器rpc，需要手动httpclientrpc
 		PdkLawsFB fb = new PdkLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -783,7 +784,7 @@ public class GamePlayerController {
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		// 远程调用游戏服务器的newgame
-		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame");
+		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
 		req.param("panshu", fb.getPanshu());
 		req.param("renshu", fb.getRenshu());
@@ -823,7 +824,7 @@ public class GamePlayerController {
 	}
 
 	/**
-	 * 加入房间。如果加入的是自己暂时离开的房间，那么就变成返回房间
+	 * 加入房间
 	 */
 	@RequestMapping(value = "/join_table")
 	@ResponseBody
@@ -848,7 +849,6 @@ public class GamePlayerController {
 			return vo;
 		}
 		String serverGameId = gameTable.getServerGame().getGameId();
-
 		// 处理如果是自己暂时离开的房间
 		MemberGameTable memberGameTable = gameService.findMemberGameTable(memberId, gameTable.getId());
 		if (memberGameTable != null) {
@@ -885,7 +885,6 @@ public class GamePlayerController {
 			vo.setData(data);
 			return vo;
 		}
-
 		// 判断普通会员个人账户的余额能否支付加入房间的费用
 		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
 				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(gameTable.getChaguanId(), memberId);

@@ -279,6 +279,13 @@ spring:
             concurrency: 1
             partitioned: false
           contentType: application/json
+        memberLoginRecord:
+          destination: memberLoginRecord
+          group: qipai-chaguan
+          consumer:
+            concurrency: 1
+            partitioned: false
+          contentType: application/json
   application:
     name: qipai-chaguan
 server:

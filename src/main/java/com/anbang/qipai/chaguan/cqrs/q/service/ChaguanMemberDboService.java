@@ -23,8 +23,9 @@ public class ChaguanMemberDboService {
 		return chaguanMemberDboDao.countOnlineMemberByChaguanId(chaguanId);
 	}
 
-	public ChaguanMemberDbo findChaguanMemberDboByMemberIdAndChaguanId(String memberId, String chaguanId) {
-		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId);
+	public ChaguanMemberDbo findChaguanMemberDboByMemberIdAndChaguanId(String memberId, String chaguanId,
+			boolean remove) {
+		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId, remove);
 	}
 
 	public ListPage findChaguanMemberDboByMemberId(int page, int size, String memberId) {
@@ -42,12 +43,16 @@ public class ChaguanMemberDboService {
 	public ChaguanMemberDbo updateChaguanMemberDboRemoveByMemberIdAndChaguanId(String memberId, String chaguanId,
 			boolean remove) {
 		chaguanMemberDboDao.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId, chaguanId, remove);
-		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId);
+		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId, remove);
 	}
 
 	public ChaguanMemberDbo chaguanMemberSet(String memberId, String chaguanId, String payType, String memberDesc) {
 		chaguanMemberDboDao.updateChaguanMemberDboMemberDescByMemberIdAndChaguanId(memberId, chaguanId, memberDesc);
 		chaguanMemberDboDao.updateChaguanMemberDboPayTypeByMemberIdAndChaguanId(memberId, chaguanId, payType);
-		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId);
+		return chaguanMemberDboDao.findByMemberIdAndChaguanId(memberId, chaguanId, false);
+	}
+
+	public void updateMemberOnlineStatus(String memberId, String onlineStatus) {
+		chaguanMemberDboDao.updateChaguanMemberDboOnlineStatusByMemberId(memberId, onlineStatus);
 	}
 }

@@ -28,6 +28,7 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
 		query.addCriteria(Criteria.where("onlineStatus").is("online"));
+		query.addCriteria(Criteria.where("remove").is(false));
 		return mongoTemplate.count(query, ChaguanMemberDbo.class);
 	}
 
@@ -35,6 +36,7 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 	public long countAmountByChaguanId(String chaguanId) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		query.addCriteria(Criteria.where("remove").is(false));
 		return mongoTemplate.count(query, ChaguanMemberDbo.class);
 	}
 
@@ -44,6 +46,7 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
 		query.skip((page - 1) * size);
 		query.limit(size);
+		query.addCriteria(Criteria.where("remove").is(false));
 		return mongoTemplate.find(query, ChaguanMemberDbo.class);
 	}
 
@@ -51,6 +54,7 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 	public long getAmountByMemberId(String memberId) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("memberId").is(memberId));
+		query.addCriteria(Criteria.where("remove").is(false));
 		return mongoTemplate.count(query, ChaguanMemberDbo.class);
 	}
 
@@ -58,16 +62,18 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 	public List<ChaguanMemberDbo> findByMemberId(int page, int size, String memberId) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("memberId").is(memberId));
+		query.addCriteria(Criteria.where("remove").is(false));
 		query.skip((page - 1) * size);
 		query.limit(size);
 		return mongoTemplate.find(query, ChaguanMemberDbo.class);
 	}
 
 	@Override
-	public ChaguanMemberDbo findByMemberIdAndChaguanId(String memberId, String chaguanId) {
+	public ChaguanMemberDbo findByMemberIdAndChaguanId(String memberId, String chaguanId, boolean remove) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("memberId").is(memberId));
 		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		query.addCriteria(Criteria.where("remove").is(remove));
 		return mongoTemplate.findOne(query, ChaguanMemberDbo.class);
 	}
 
@@ -110,6 +116,15 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
 		Update update = new Update();
 		update.set("payType", payType);
+		mongoTemplate.updateFirst(query, update, ChaguanMemberDbo.class);
+	}
+
+	@Override
+	public void updateChaguanMemberDboOnlineStatusByMemberId(String memberId, String onlineStatus) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("memberId").is(memberId));
+		Update update = new Update();
+		update.set("onlineStatus", onlineStatus);
 		mongoTemplate.updateFirst(query, update, ChaguanMemberDbo.class);
 	}
 

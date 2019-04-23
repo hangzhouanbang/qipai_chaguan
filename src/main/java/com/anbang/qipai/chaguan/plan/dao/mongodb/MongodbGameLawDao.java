@@ -42,8 +42,9 @@ public class MongodbGameLawDao implements GameLawDao {
 
 	@Override
 	public GameLaw findByGameAndName(Game game, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		Query query = new Query(Criteria.where("game").is(game));
+		query.addCriteria(Criteria.where("name").is(name));
+		return mongoTemplate.findOne(query, GameLaw.class);
 	}
 
 }

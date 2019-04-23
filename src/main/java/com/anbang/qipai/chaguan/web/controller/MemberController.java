@@ -100,8 +100,14 @@ public class MemberController {
 	 * 根据茶馆id查找茶馆
 	 */
 	@RequestMapping("/query_chaguan_by_id")
-	public CommonVO queryChaguanById(String chaguanId) {
+	public CommonVO queryChaguanById(String token, String chaguanId) {
 		CommonVO vo = new CommonVO();
+		String memberId = memberAuthService.getMemberIdBySessionId(token);
+		if (memberId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+			return vo;
+		}
 		ChaguanDbo chaguanDbo = chaguanDboService.findChaguanDboById(chaguanId);
 		if (chaguanDbo == null) {
 			vo.setSuccess(false);
@@ -113,11 +119,14 @@ public class MemberController {
 				.findChaguanYushiAccountDboByAgentId(chaguanDbo.getAgentId());
 		ChaguanVO chaguan = new ChaguanVO();
 		chaguan.setId(chaguanDbo.getId());
+		chaguan.setHeadimgurl(chaguanDbo.getHeadimgurl());
 		chaguan.setName(chaguanDbo.getName());
 		chaguan.setDesc(chaguanDbo.getDesc());
 		chaguan.setOnlineAmount(onlineAmount);
 		chaguan.setMemberNum(chaguanDbo.getMemberNum());
 		chaguan.setBalance(account.getBalance());
+		chaguan.setJoin(
+				chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId, false) != null);
 		vo.setMsg("chaguan info");
 		Map data = new HashMap<>();
 		vo.setData(data);
@@ -137,12 +146,15 @@ public class MemberController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
+		ChaguanDbo chaguanDbo = chaguanDboService.findChaguanDboById(chaguanId);
+		if (chaguanDbo == null) {
+			vo.setSuccess(false);
+			vo.setMsg("chaguan not found");
+			return vo;
+		}
 		MemberDbo member = memberDboService.findMemberDboById(memberId);
-		ChaguanMemberDbo chaguanMemberDbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId,
-				chaguanId);
-		if (chaguanMemberDbo != null && !chaguanMemberDbo.isRemove()
-				&& chaguanMemberApplyService.findChaguanMemberApplyByMemberIdAndChaguanIdAndState(memberId, chaguanId,
-						ChaguanMemberApplyState.APPLYING) != null) {
+		if (chaguanMemberApplyService.findChaguanMemberApplyByMemberIdAndChaguanIdAndState(memberId, chaguanId,
+				ChaguanMemberApplyState.APPLYING) != null) {
 			vo.setSuccess(false);
 			vo.setMsg("applying");
 			return vo;
