@@ -14,7 +14,7 @@ import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.AgentDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanMemberDbo;
-import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
@@ -115,8 +115,8 @@ public class MemberController {
 			return vo;
 		}
 		int onlineAmount = (int) chaguanMemberDboService.countOnlineMemberByChaguanId(chaguanId);
-		ChaguanYushiAccountDbo account = chaguanYushiService
-				.findChaguanYushiAccountDboByAgentId(chaguanDbo.getAgentId());
+		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
 		ChaguanVO chaguan = new ChaguanVO();
 		chaguan.setId(chaguanDbo.getId());
 		chaguan.setHeadimgurl(chaguanDbo.getHeadimgurl());

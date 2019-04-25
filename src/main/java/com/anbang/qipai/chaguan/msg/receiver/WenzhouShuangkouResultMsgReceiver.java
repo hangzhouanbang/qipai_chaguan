@@ -15,7 +15,9 @@ import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.msg.channel.sink.WenzhouShuangkouResultSink;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
+import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
+import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameHistoricalJuResult;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameHistoricalPanResult;
@@ -26,6 +28,7 @@ import com.anbang.qipai.chaguan.plan.bean.historicalresult.puke.WenzhouShuangkou
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalJuResultService;
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalPanResultService;
 import com.anbang.qipai.chaguan.plan.service.GameService;
+import com.anbang.qipai.chaguan.web.fb.WzskLawsFB;
 import com.dml.accounting.AccountingRecord;
 import com.google.gson.Gson;
 
@@ -45,6 +48,9 @@ public class WenzhouShuangkouResultMsgReceiver {
 
 	@Autowired
 	private ChaguanDboService chaguanDboService;
+
+	@Autowired
+	private MemberChaguanYushiRecordMsgService memberChaguanYushiRecordMsgService;
 
 	@Autowired
 	private GameService gameService;
@@ -74,10 +80,14 @@ public class WenzhouShuangkouResultMsgReceiver {
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {
+						List<String> laws = new ArrayList<>();
+						for (GameLaw law : table.getLaws()) {
+							laws.add(law.getName());
+						}
 						List<GameJuPlayerResult> juPlayerResultList = new ArrayList<>();
 						((List) playerList).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime);
+							jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
 							juPlayerResultList.add(new WenzhouShuangkouJuPlayerResult((Map) juPlayerResult));
 						});
 						pukeHistoricalResult.setPlayerResultList(juPlayerResultList);
@@ -118,12 +128,14 @@ public class WenzhouShuangkouResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime) {
+	public void jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
 		try {
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, 100, "game ju finish",
-					finishTime);
+			WzskLawsFB fb = new WzskLawsFB(lawNames);
+			int gold = fb.payForCreateRoom();
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdrawAnyway(memberId, agentId, gold,
+					"game ju finish", finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
-			// TODO Kafka发消息 玩家充值记录
+			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -93,4 +93,12 @@ public class MognodbMemberChaguanYushiAccountDboDao implements MemberChaguanYush
 		return mongoTemplate.findOne(query, MemberChaguanYushiAccountDbo.class);
 	}
 
+	@Override
+	public MemberChaguanYushiAccountDbo findByAgentIdAndMemberId(String agentId, String memberId) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("agentId").is(agentId));
+		query.addCriteria(Criteria.where("memberId").is(memberId));
+		return mongoTemplate.findOne(query, MemberChaguanYushiAccountDbo.class);
+	}
+
 }

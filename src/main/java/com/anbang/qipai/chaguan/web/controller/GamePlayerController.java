@@ -1,5 +1,6 @@
 package com.anbang.qipai.chaguan.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.anbang.qipai.chaguan.cqrs.c.service.GameTableCmdService;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanMemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
+import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberPayType;
 import com.anbang.qipai.chaguan.plan.bean.MemberLoginLimitRecord;
+import com.anbang.qipai.chaguan.plan.bean.game.Game;
+import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
 import com.anbang.qipai.chaguan.plan.bean.game.GameServer;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 import com.anbang.qipai.chaguan.plan.bean.game.IllegalGameLawsException;
@@ -58,6 +64,9 @@ public class GamePlayerController {
 
 	@Autowired
 	private MemberChaguanYushiService memberChaguanYushiService;
+
+	@Autowired
+	private ChaguanMemberDboService chaguanMemberDboService;
 
 	@Autowired
 	private GameTableCmdService gameTableCmdService;
@@ -102,15 +111,20 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		RamjLawsFB fb = new RamjLawsFB(lawNames);
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			int gold = fb.payForCreateRoom();
+			if (account == null || account.getBalance() < gold) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
-		RamjLawsFB fb = new RamjLawsFB(lawNames);
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
@@ -180,12 +194,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -262,12 +280,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -347,12 +369,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -435,14 +461,19 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
-		}
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
 		WzskLawsFB fb = new WzskLawsFB(lawNames);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			int gold = fb.payForCreateRoom();
+			if (account == null || account.getBalance() < gold) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
+		}
 		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
@@ -524,12 +555,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -608,12 +643,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -686,10 +725,14 @@ public class GamePlayerController {
 		} catch (NoServerAvailableForGameException e) {
 			return CommonVoUtil.error(e.getClass().getName());
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			return CommonVoUtil.error("InsufficientBalanceException");
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				return CommonVoUtil.error("InsufficientBalanceException");
+			}
 		}
 		gameService.saveGameTable(gameTable);
 
@@ -770,12 +813,16 @@ public class GamePlayerController {
 			vo.setMsg("NoServerAvailableForGameException");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
+			if (account == null || account.getBalance() < 100) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		CyskLawsFB fb = new CyskLawsFB(lawNames);
 
@@ -885,13 +932,27 @@ public class GamePlayerController {
 			vo.setData(data);
 			return vo;
 		}
-		// 判断普通会员个人账户的余额能否支付加入房间的费用
-		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(gameTable.getChaguanId(), memberId);
-		if (account == null || account.getBalance() < 100) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId,
+				gameTable.getChaguanId(), false);
+		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
+			int gold = 100;
+			List<String> lawNames = new ArrayList<>();
+			List<GameLaw> laws = gameTable.getLaws();
+			// 构建list laws
+			laws.forEach((law) -> lawNames.add(law.getName()));
+			if (gameTable.getGame().equals(Game.wenzhouShuangkou)) {
+				gold = new WzskLawsFB(lawNames).payForJoinRoom();
+			} else if (gameTable.getGame().equals(Game.ruianMajiang)) {
+				gold = new RamjLawsFB(lawNames).payForJoinRoom();
+			}
+			// 判断普通会员个人账户的余额能否支付加入房间的费用
+			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(gameTable.getChaguanId(), memberId);
+			if (account == null || account.getBalance() < gold) {
+				vo.setSuccess(false);
+				vo.setMsg("InsufficientBalanceException");
+				return vo;
+			}
 		}
 		// 游戏服务器rpc加入房间
 		GameServer gameServer = gameTable.getServerGame().getServer();

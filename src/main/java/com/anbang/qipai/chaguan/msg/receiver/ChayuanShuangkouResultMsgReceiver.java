@@ -15,6 +15,7 @@ import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.msg.channel.sink.ChayuanShuangkouResultSink;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
+import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameHistoricalJuResult;
@@ -48,7 +49,8 @@ public class ChayuanShuangkouResultMsgReceiver {
 
 	@Autowired
 	private GameService gameService;
-
+	@Autowired
+	private MemberChaguanYushiRecordMsgService memberChaguanYushiRecordMsgService;
 	private Gson gson = new Gson();
 
 	@StreamListener(ChayuanShuangkouResultSink.CHAYUANSHUANGKOURESULT)
@@ -121,10 +123,10 @@ public class ChayuanShuangkouResultMsgReceiver {
 
 	public void jiesaun(String agentId, String memberId, long finishTime) {
 		try {
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, 100, "game ju finish",
-					finishTime);
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdrawAnyway(memberId, agentId, 100,
+					"game ju finish", finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
-			// TODO Kafka发消息 玩家充值记录
+			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

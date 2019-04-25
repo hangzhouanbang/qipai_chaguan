@@ -13,6 +13,7 @@ import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
@@ -77,6 +78,13 @@ public class MemberChaguanYushiController {
 			vo.setMsg("memebr not found");
 			return vo;
 		}
+		MemberChaguanYushiAccountDbo memberAccount = memberChaguanYushiService
+				.findMemberChaguanYushiAccountDboByAgentIdAndMemebrId(agentId, memberId);
+		if (memberAccount == null) {
+			vo.setSuccess(false);
+			vo.setMsg("memebr not found");
+			return vo;
+		}
 		ChaguanYushiAccountDbo account = chaguanYushiService.findChaguanYushiAccountDboByAgentId(agentId);
 		if (account == null || account.getBalance() < amount) {
 			vo.setSuccess(false);
@@ -101,8 +109,9 @@ public class MemberChaguanYushiController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
-		MemberDbo memberDbo = memberDboService.findMemberDboById(memberId);
-		if (memberDbo == null) {
+		MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+				.findMemberChaguanYushiAccountDboByAgentIdAndMemebrId(agentId, memberId);
+		if (account == null) {
 			vo.setSuccess(false);
 			vo.setMsg("memebr not found");
 			return vo;

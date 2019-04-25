@@ -75,6 +75,38 @@ public class WzskLawsFB {
 		});
 	}
 
+	public int payForCreateRoom() {
+		int gold = 100;
+		if (panshu.equals("30")) {
+			gold = 200;
+		} else if (panshu.equals("16")) {
+			gold = 100;
+		} else if (panshu.equals("8")) {
+			gold = 50;
+		} else if (panshu.equals("4")) {
+			gold = 100;
+		} else {
+
+		}
+		return gold;
+	}
+
+	public int payForJoinRoom() {
+		int gold = 100;
+		if (panshu.equals("30")) {
+			gold = 200;
+		} else if (panshu.equals("16")) {
+			gold = 100;
+		} else if (panshu.equals("8")) {
+			gold = 50;
+		} else if (panshu.equals("4")) {
+			gold = 100;
+		} else {
+
+		}
+		return gold;
+	}
+
 	public String getPanshu() {
 		return panshu;
 	}

@@ -31,7 +31,10 @@ public class MongodbGameTableDao implements GameTableDao {
 
 	@Override
 	public GameTable findTableOpen(String roomNo) {
-		return repository.findByNoAndState(roomNo, GameTableStateConfig.WAITING);
+		Query query = new Query();
+		query.addCriteria(Criteria.where("no").is(roomNo));
+		query.addCriteria(Criteria.where("state").in(GameTableStateConfig.WAITING, GameTableStateConfig.PLAYING));
+		return mongoTemplate.findOne(query, GameTable.class);
 	}
 
 	@Override

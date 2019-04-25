@@ -24,4 +24,6 @@ public interface MemberChaguanYushiAccountDboDao {
 	MemberChaguanYushiAccountDbo findByAccountId(String accountId);
 
 	MemberChaguanYushiAccountDbo findByChaguanIdAndMemberId(String chaguanId, String memberId);
+
+	MemberChaguanYushiAccountDbo findByAgentIdAndMemberId(String agentId, String memberId);
 }

@@ -15,7 +15,9 @@ import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.msg.channel.sink.RuianMajiangResultSink;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
+import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
+import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameHistoricalJuResult;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameHistoricalPanResult;
@@ -26,6 +28,7 @@ import com.anbang.qipai.chaguan.plan.bean.historicalresult.majiang.RuianMajiangP
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalJuResultService;
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalPanResultService;
 import com.anbang.qipai.chaguan.plan.service.GameService;
+import com.anbang.qipai.chaguan.web.fb.RamjLawsFB;
 import com.dml.accounting.AccountingRecord;
 import com.google.gson.Gson;
 
@@ -48,7 +51,8 @@ public class RuianMajiangResultMsgReceiver {
 
 	@Autowired
 	private GameService gameService;
-
+	@Autowired
+	private MemberChaguanYushiRecordMsgService memberChaguanYushiRecordMsgService;
 	private Gson gson = new Gson();
 
 	@StreamListener(RuianMajiangResultSink.RUIANMAJIANGRESULT)
@@ -74,10 +78,14 @@ public class RuianMajiangResultMsgReceiver {
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {
+						List<String> laws = new ArrayList<>();
+						for (GameLaw law : table.getLaws()) {
+							laws.add(law.getName());
+						}
 						List<GameJuPlayerResult> juPlayerResultList = new ArrayList<>();
 						((List) map.get("playerResultList")).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime);
+							jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
 							juPlayerResultList.add(new RuianMajiangJuPlayerResult((Map) juPlayerResult));
 						});
 						majiangHistoricalResult.setPlayerResultList(juPlayerResultList);
@@ -118,12 +126,14 @@ public class RuianMajiangResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime) {
+	public void jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
 		try {
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, 100, "game ju finish",
-					finishTime);
+			RamjLawsFB fb = new RamjLawsFB(lawNames);
+			int gold = fb.payForCreateRoom();
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdrawAnyway(memberId, agentId, gold,
+					"game ju finish", finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
-			// TODO Kafka发消息 玩家充值记录
+			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
