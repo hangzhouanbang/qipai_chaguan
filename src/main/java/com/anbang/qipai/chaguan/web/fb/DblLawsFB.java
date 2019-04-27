@@ -52,6 +52,34 @@ public class DblLawsFB {
 		});
 	}
 
+	public int payForCreateRoom() {
+		int gold = 100;
+		if (panshu.equals("10")) {
+			gold = 50;
+		} else if (panshu.equals("20")) {
+			gold = 100;
+		} else if (panshu.equals("30")) {
+			gold = 150;
+		} else {
+
+		}
+		return gold;
+	}
+
+	public int payForJoinRoom() {
+		int gold = 100;
+		if (panshu.equals("10")) {
+			gold = 50;
+		} else if (panshu.equals("20")) {
+			gold = 100;
+		} else if (panshu.equals("30")) {
+			gold = 150;
+		} else {
+
+		}
+		return gold;
+	}
+
 	public String getPanshu() {
 		return panshu;
 	}

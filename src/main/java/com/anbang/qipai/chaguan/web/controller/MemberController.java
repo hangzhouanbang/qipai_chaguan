@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,6 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
-import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberDboService;
 import com.anbang.qipai.chaguan.msg.service.ChaguanMemberMsgService;
@@ -39,6 +39,7 @@ import com.highto.framework.web.page.ListPage;
  * @author lsc
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/member")
 public class MemberController {
@@ -66,9 +67,6 @@ public class MemberController {
 
 	@Autowired
 	private MemberChaguanYushiService memberChaguanYushiService;
-
-	@Autowired
-	private ChaguanYushiService chaguanYushiService;
 
 	@Autowired
 	private ChaguanMemberMsgService chaguanMemberMsgService;

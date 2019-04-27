@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +33,7 @@ import com.dml.accounting.InsufficientBalanceException;
  * @author lsc
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/memberchaguanyushi")
 public class MemberChaguanYushiController {
@@ -75,14 +77,14 @@ public class MemberChaguanYushiController {
 		MemberDbo memberDbo = memberDboService.findMemberDboById(memberId);
 		if (memberDbo == null) {
 			vo.setSuccess(false);
-			vo.setMsg("memebr not found");
+			vo.setMsg("member not found");
 			return vo;
 		}
 		MemberChaguanYushiAccountDbo memberAccount = memberChaguanYushiService
 				.findMemberChaguanYushiAccountDboByAgentIdAndMemebrId(agentId, memberId);
 		if (memberAccount == null) {
 			vo.setSuccess(false);
-			vo.setMsg("memebr not found");
+			vo.setMsg("member not found");
 			return vo;
 		}
 		ChaguanYushiAccountDbo account = chaguanYushiService.findChaguanYushiAccountDboByAgentId(agentId);
@@ -113,13 +115,13 @@ public class MemberChaguanYushiController {
 				.findMemberChaguanYushiAccountDboByAgentIdAndMemebrId(agentId, memberId);
 		if (account == null) {
 			vo.setSuccess(false);
-			vo.setMsg("memebr not found");
+			vo.setMsg("member not found");
 			return vo;
 		}
 		long accoutingTime = System.currentTimeMillis();
 		try {
-			AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, amount,
-					"recharge member:" + memberId, accoutingTime);
+			AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, amount, "玩家:" + memberId,
+					accoutingTime);
 			ChaguanYushiRecordDbo agentRecord = chaguanYushiService.withdraw(agentAr, agentId);
 			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(agentRecord);
 			AccountingRecord memberAr = memberChaguanYushiCmdService.giveYushiToMemberByAgent(memberId, agentId, amount,

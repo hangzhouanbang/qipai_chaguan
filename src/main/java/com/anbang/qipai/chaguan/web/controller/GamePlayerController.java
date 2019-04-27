@@ -9,6 +9,7 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,6 +53,7 @@ import com.google.gson.Gson;
  * @author lsc
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/game")
 public class GamePlayerController {
@@ -124,7 +126,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
 		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
@@ -205,7 +206,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -291,7 +291,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -380,7 +379,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -474,7 +472,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -566,7 +563,6 @@ public class GamePlayerController {
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -645,20 +641,20 @@ public class GamePlayerController {
 		}
 		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
 				false);
+		DblLawsFB fb = new DblLawsFB(lawNames);
+		int gold = fb.payForCreateRoom();
 		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
 			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
 					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-			if (account == null || account.getBalance() < 100) {
+			if (account == null || account.getBalance() < gold) {
 				vo.setSuccess(false);
 				vo.setMsg("InsufficientBalanceException");
 				return vo;
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
-		DblLawsFB fb = new DblLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
 		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
@@ -727,18 +723,18 @@ public class GamePlayerController {
 		}
 		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
 				false);
+		PdkLawsFB fb = new PdkLawsFB(lawNames);
+		int gold = fb.payForCreateRoom();
 		if (dbo.getPayType() == null || dbo.getPayType().equals(ChaguanMemberPayType.SELF)) {
 			MemberChaguanYushiAccountDbo account = memberChaguanYushiService
 					.findMemberChaguanYushiAccountDboByChaguanIdAndMemebrId(chaguanId, memberId);
-			if (account == null || account.getBalance() < 100) {
+			if (account == null || account.getBalance() < gold) {
 				return CommonVoUtil.error("InsufficientBalanceException");
 			}
 		}
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
-		PdkLawsFB fb = new PdkLawsFB(lawNames);
 		// 远程调用游戏服务器的newgame
 		Request req = httpClient.newRequest(gameServer.getHttpUrl() + "/game/newgame_player_quit");
 		req.param("playerId", memberId);
@@ -825,8 +821,6 @@ public class GamePlayerController {
 			}
 		}
 		CyskLawsFB fb = new CyskLawsFB(lawNames);
-
-		gameService.saveGameTable(gameTable);
 
 		GameServer gameServer = gameTable.getServerGame().getServer();
 		// 游戏服务器rpc，需要手动httpclientrpc
@@ -944,6 +938,10 @@ public class GamePlayerController {
 				gold = new WzskLawsFB(lawNames).payForJoinRoom();
 			} else if (gameTable.getGame().equals(Game.ruianMajiang)) {
 				gold = new RamjLawsFB(lawNames).payForJoinRoom();
+			} else if (gameTable.getGame().equals(Game.paodekuai)) {
+				gold = new PdkLawsFB(lawNames).payForJoinRoom();
+			} else if (gameTable.getGame().equals(Game.daboluo)) {
+				gold = new DblLawsFB(lawNames).payForJoinRoom();
 			}
 			// 判断普通会员个人账户的余额能否支付加入房间的费用
 			MemberChaguanYushiAccountDbo account = memberChaguanYushiService

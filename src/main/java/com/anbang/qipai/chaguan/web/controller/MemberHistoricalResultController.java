@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import com.anbang.qipai.chaguan.plan.service.MemberAuthService;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
 import com.highto.framework.web.page.ListPage;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/result")
 public class MemberHistoricalResultController {

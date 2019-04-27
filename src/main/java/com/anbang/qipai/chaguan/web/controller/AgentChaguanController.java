@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,7 @@ import com.highto.framework.web.page.ListPage;
  * @author lsc
  *
  */
+@CrossOrigin
 @RestController
 @RequestMapping("/agentchaguan")
 public class AgentChaguanController {
@@ -101,6 +103,32 @@ public class AgentChaguanController {
 
 	@Autowired
 	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
+
+	/**
+	 * 推广员是否开通茶馆
+	 */
+	@RequestMapping("/apply_info")
+	public CommonVO agentApplyInfo(String token) {
+		CommonVO vo = new CommonVO();
+		String agentId = agentAuthService.getAgentIdBySessionId(token);
+		if (agentId == null) {
+			vo.setSuccess(false);
+			vo.setMsg("invalid token");
+			return vo;
+		}
+		AgentDbo agent = agentDboService.findAgentDboByAgentId(agentId);
+		if (!agent.isAgentAuth()) {
+			vo.setSuccess(false);
+			vo.setMsg("not agent");
+			return vo;
+		}
+		if (chaguanApplyService.fingChaguanApplyByAgentIdAndStatus(agentId, ChaguanApplyStatus.SUCCESS) == null) {
+			vo.setSuccess(false);
+			vo.setMsg("not apply");
+			return vo;
+		}
+		return vo;
+	}
 
 	/**
 	 * 推广员申请开通茶馆
@@ -185,10 +213,18 @@ public class AgentChaguanController {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
 		}
+		AgentDbo agentDbo = agentDboService.findAgentDboByAgentId(agentId);
+		ChaguanYushiAccountDbo account = chaguanYushiService.findChaguanYushiAccountDboByAgentId(agentId);
 		ListPage listPage = chaguanDboService.findChaguanDboByAgentId(page, size, agentId);
 		Map data = new HashMap<>();
 		vo.setData(data);
+		data.put("agent", agentDbo);
+		data.put("balance", 0);
+		if (account != null) {
+			data.put("balance", account.getBalance());
+		}
 		data.put("listPage", listPage);
+		data.put("num", listPage.getTotalItemsCount());
 		return vo;
 	}
 

@@ -4,11 +4,29 @@ public class ChaguanShopProduct {
 
 	private String id;
 	private String name;
+	private String productPic;// ICON图
+	private int weight;// 权重
 	private RewardType rewardType;// 奖励类型
 	private double rewardNum;// 奖励数量
 	private double price;
 	private double firstDiscount;// 首次折扣
 	private double firstDiscountPrice;// 首次折扣后价格
+
+	public String getProductPic() {
+		return productPic;
+	}
+
+	public void setProductPic(String productPic) {
+		this.productPic = productPic;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
+	}
 
 	public String getId() {
 		return id;
