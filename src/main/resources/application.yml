@@ -2,6 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/qipai_chaguan
+
   cloud:
     stream:
       kafka:
@@ -289,7 +290,7 @@ spring:
   application:
     name: qipai-chaguan
 server:
-  port: 85
+  port: 91
   
 eureka:
   client:
