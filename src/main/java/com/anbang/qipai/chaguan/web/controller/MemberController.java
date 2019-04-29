@@ -20,6 +20,7 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberDboService;
 import com.anbang.qipai.chaguan.msg.service.ChaguanMemberMsgService;
@@ -63,6 +64,9 @@ public class MemberController {
 	private ChaguanMemberDboService chaguanMemberDboService;
 
 	@Autowired
+	private ChaguanYushiService chaguanYushiService;
+
+	@Autowired
 	private MemberChaguanYushiCmdService memberChaguanYushiCmdService;
 
 	@Autowired
@@ -85,6 +89,7 @@ public class MemberController {
 		if (memberId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ListPage listPage = chaguanMemberDboService.findChaguanMemberDboByMemberId(page, size, memberId);
 		vo.setMsg("chaguan info");
@@ -122,7 +127,9 @@ public class MemberController {
 		chaguan.setDesc(chaguanDbo.getDesc());
 		chaguan.setOnlineAmount(onlineAmount);
 		chaguan.setMemberNum(chaguanDbo.getMemberNum());
-		chaguan.setBalance(account.getBalance());
+		if (account != null) {
+			chaguan.setBalance(account.getBalance());
+		}
 		chaguan.setJoin(
 				chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId, false) != null);
 		vo.setMsg("chaguan info");
@@ -148,6 +155,13 @@ public class MemberController {
 		if (chaguanDbo == null) {
 			vo.setSuccess(false);
 			vo.setMsg("chaguan not found");
+			return vo;
+		}
+		ChaguanMemberDbo dbo = chaguanMemberDboService.findChaguanMemberDboByMemberIdAndChaguanId(memberId, chaguanId,
+				false);
+		if (dbo != null) {
+			vo.setSuccess(false);
+			vo.setMsg("join already");
 			return vo;
 		}
 		MemberDbo member = memberDboService.findMemberDboById(memberId);

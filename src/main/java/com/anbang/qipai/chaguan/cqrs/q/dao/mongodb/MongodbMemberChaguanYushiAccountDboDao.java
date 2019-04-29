@@ -13,7 +13,7 @@ import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiAccountDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 
 @Component
-public class MognodbMemberChaguanYushiAccountDboDao implements MemberChaguanYushiAccountDboDao {
+public class MongodbMemberChaguanYushiAccountDboDao implements MemberChaguanYushiAccountDboDao {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;

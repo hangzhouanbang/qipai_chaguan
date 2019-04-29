@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,7 +85,7 @@ public class ChaguanShopController {
 	 * 添加商品
 	 */
 	@RequestMapping("/product_add")
-	public CommonVO addProduct(ChaguanShopProduct product) {
+	public CommonVO addProduct(@RequestBody ChaguanShopProduct product) {
 		CommonVO vo = new CommonVO();
 		ChaguanShopProduct p = chaguanShopProductService.addChaguanShopProduct(product);
 		chaguanShopProductMsgService.addChaguanShopProduct(p);
@@ -95,7 +96,7 @@ public class ChaguanShopController {
 	 * 修改商品
 	 */
 	@RequestMapping("/product_update")
-	public CommonVO updateProduct(ChaguanShopProduct product) {
+	public CommonVO updateProduct(@RequestBody ChaguanShopProduct product) {
 		CommonVO vo = new CommonVO();
 		ChaguanShopProduct p = chaguanShopProductService.updateChaguanShopProduct(product);
 		chaguanShopProductMsgService.updateChaguanShopProduct(p);
@@ -106,7 +107,7 @@ public class ChaguanShopController {
 	 * 删除商品
 	 */
 	@RequestMapping("/product_remove")
-	public CommonVO removeProduct(String[] productIds) {
+	public CommonVO removeProduct(@RequestBody String[] productIds) {
 		CommonVO vo = new CommonVO();
 		chaguanShopProductService.removeChaguanShopProducts(productIds);
 		chaguanShopProductMsgService.removeChaguanShopProduct(productIds);

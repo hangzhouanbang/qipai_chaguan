@@ -95,7 +95,7 @@ public class MemberChaguanYushiController {
 		}
 		Map data = new HashMap<>();
 		vo.setData(data);
-		data.put("member info", memberDbo);
+		data.put("member", memberDbo);
 		return vo;
 	}
 

@@ -3,6 +3,7 @@ package com.anbang.qipai.chaguan.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -175,6 +176,11 @@ public class AgentChaguanController {
 	public CommonVO applychaguan_pass(String applyId) {
 		CommonVO vo = new CommonVO();
 		ChaguanApply apply = chaguanApplyService.fingChaguanApplyByApplyId(applyId);
+		if (apply == null) {
+			vo.setSuccess(false);
+			vo.setMsg("apply not existed");
+			return vo;
+		}
 		// 创建茶馆玉石账户
 		try {
 			CreateChaguanYushiAccountResult result = agentChaguanYushiCmdService
@@ -212,6 +218,7 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		AgentDbo agentDbo = agentDboService.findAgentDboByAgentId(agentId);
 		ChaguanYushiAccountDbo account = chaguanYushiService.findChaguanYushiAccountDboByAgentId(agentId);
@@ -238,10 +245,16 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		if (chaguanApplyService.fingChaguanApplyByAgentIdAndStatus(agentId, ChaguanApplyStatus.SUCCESS) == null) {
 			vo.setSuccess(false);
 			vo.setMsg("can not create");
+			return vo;
+		}
+		if (StringUtil.isBlank(name) || StringUtil.isBlank(desc)) {
+			vo.setSuccess(false);
+			vo.setMsg("at least one param is null");
 			return vo;
 		}
 		AgentDbo agent = agentDboService.findAgentDboByAgentId(agentId);
@@ -270,6 +283,7 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ChaguanDbo chaguanDbo = chaguanDboService.findChaguanDboById(chaguanId);
 		if (chaguanDbo == null) {
@@ -286,6 +300,7 @@ public class AgentChaguanController {
 		chaguan.setOnlineAmount(onlineAmount);
 		chaguan.setMemberNum(chaguanDbo.getMemberNum());
 		chaguan.setBalance(account.getBalance());
+		chaguan.setHeadimgurl(chaguanDbo.getHeadimgurl());
 		vo.setMsg("chaguan info");
 		Map data = new HashMap<>();
 		vo.setData(data);
@@ -304,6 +319,7 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ListPage listPage = chaguanMemberDboService.findChaguanMemberDboByChaguanId(page, size, chaguanId);
 		Map data = new HashMap<>();
@@ -322,6 +338,12 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
+		}
+		if (StringUtil.isBlank(agentId) || StringUtil.isBlank(name) || StringUtil.isBlank(desc)) {
+			vo.setSuccess(false);
+			vo.setMsg("at least one param is null");
+			return vo;
 		}
 		ChaguanDbo dbo = chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
 		chaguanMsgService.updateChaguan(dbo);
@@ -334,6 +356,11 @@ public class AgentChaguanController {
 	@RequestMapping("/chaguan_update_rpc")
 	public CommonVO chaguan_update_rpc(String chaguanId, String name, String desc) {
 		CommonVO vo = new CommonVO();
+		if (StringUtil.isBlank(chaguanId) || StringUtil.isBlank(name) || StringUtil.isBlank(desc)) {
+			vo.setSuccess(false);
+			vo.setMsg("at least one param is null");
+			return vo;
+		}
 		ChaguanDbo dbo = chaguanDboService.updateChaguanBaseInfo(chaguanId, name, desc);
 		chaguanMsgService.updateChaguan(dbo);
 		return vo;
@@ -349,9 +376,15 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ChaguanMemberDbo member = chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId,
 				chaguanId, true);
+		if (member == null) {
+			vo.setSuccess(false);
+			vo.setMsg("member not found");
+			return vo;
+		}
 		chaguanMemberMsgService.removeChaguanMember(member);
 		ChaguanDbo dbo = chaguanDboService.updateChaguanDboMemberNum(chaguanId);
 		chaguanMsgService.updateChaguan(dbo);
@@ -366,6 +399,11 @@ public class AgentChaguanController {
 		CommonVO vo = new CommonVO();
 		ChaguanMemberDbo member = chaguanMemberDboService.updateChaguanMemberDboRemoveByMemberIdAndChaguanId(memberId,
 				chaguanId, true);
+		if (member == null) {
+			vo.setSuccess(false);
+			vo.setMsg("member not found");
+			return vo;
+		}
 		chaguanMemberMsgService.removeChaguanMember(member);
 		ChaguanDbo dbo = chaguanDboService.updateChaguanDboMemberNum(chaguanId);
 		chaguanMsgService.updateChaguan(dbo);
@@ -383,8 +421,14 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ChaguanMemberDbo member = chaguanMemberDboService.chaguanMemberSet(memberId, chaguanId, payType, memberDesc);
+		if (member == null) {
+			vo.setSuccess(false);
+			vo.setMsg("member not found");
+			return vo;
+		}
 		chaguanMemberMsgService.setChaguanMember(member);
 		return vo;
 	}
@@ -400,6 +444,7 @@ public class AgentChaguanController {
 		if (agentId == null) {
 			vo.setSuccess(false);
 			vo.setMsg("invalid token");
+			return vo;
 		}
 		ListPage listPage = chaguanMemberApplyService.findChaguanMemberApply(chaguanId, page, size);
 		Map data = new HashMap<>();

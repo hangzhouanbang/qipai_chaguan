@@ -51,6 +51,7 @@ public class ChaguanDboService {
 
 	public ChaguanDbo updateChaguanBaseInfo(String chaguanId, String name, String desc) {
 		chaguanDboDao.updateChaguanBaseInfo(chaguanId, name, desc);
+		chaguanMemberDboDao.updateChaguanMemberDboChaguanNameAndDescByChaguanId(chaguanId, name, desc);
 		return chaguanDboDao.findById(chaguanId);
 	}
 

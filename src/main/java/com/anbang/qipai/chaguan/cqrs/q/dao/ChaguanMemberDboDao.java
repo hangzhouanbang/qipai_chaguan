@@ -22,6 +22,8 @@ public interface ChaguanMemberDboDao {
 
 	void updateChaguanMemberDboRemoveByMemberIdAndChaguanId(String memberId, String chaguanId, boolean remove);
 
+	void updateChaguanMemberDboYushiByMemberIdAndAgentId(String memberId, String agentId, int amount);
+
 	void updateChaguanMemberDboChaguanNameAndDescByChaguanId(String chaguanId, String chaguanName, String chaguanDesc);
 
 	void updateChaguanMemberDboMemberDescByMemberIdAndChaguanId(String memberId, String chaguanId, String memberDesc);

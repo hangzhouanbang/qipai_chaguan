@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.anbang.qipai.chaguan.cqrs.c.domain.yushi.CreateMemberChaguanYushiAccountResult;
+import com.anbang.qipai.chaguan.cqrs.q.dao.ChaguanMemberDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiAccountDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiRecordDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberDboDao;
@@ -27,6 +28,9 @@ public class MemberChaguanYushiService {
 
 	@Autowired
 	private MemberChaguanYushiRecordDboDao memberChaguanYushiRecordDboDao;
+
+	@Autowired
+	private ChaguanMemberDboDao chaguanMemberDboDao;
 
 	/**
 	 * 创建茶馆玉石账户
@@ -56,7 +60,8 @@ public class MemberChaguanYushiService {
 		dbo.setMemberId(memberId);
 		dbo.setSummary(record.getSummary());
 		memberChaguanYushiRecordDboDao.insert(dbo);
-
+		chaguanMemberDboDao.updateChaguanMemberDboYushiByMemberIdAndAgentId(memberId, agentId,
+				(int) record.getBalanceAfter());
 		memberChaguanYushiAccountDboDao.updateBalance(record.getAccountId(), (int) record.getBalanceAfter());
 		return dbo;
 	}

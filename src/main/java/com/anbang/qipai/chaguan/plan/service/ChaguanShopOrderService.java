@@ -3,6 +3,7 @@ package com.anbang.qipai.chaguan.plan.service;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.anbang.qipai.chaguan.plan.bean.ChaguanShopOrder;
@@ -12,6 +13,7 @@ import com.anbang.qipai.chaguan.plan.dao.ChaguanShopOrderDao;
 @Service
 public class ChaguanShopOrderService {
 
+	@Autowired
 	private ChaguanShopOrderDao chaguanShopOrderDao;
 
 	public ChaguanShopOrder addChaguanShopOrder(String payerId, String payerName, String receiverId,

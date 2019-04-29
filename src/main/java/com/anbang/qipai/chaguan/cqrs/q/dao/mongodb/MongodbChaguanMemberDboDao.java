@@ -128,4 +128,14 @@ public class MongodbChaguanMemberDboDao implements ChaguanMemberDboDao {
 		mongoTemplate.updateFirst(query, update, ChaguanMemberDbo.class);
 	}
 
+	@Override
+	public void updateChaguanMemberDboYushiByMemberIdAndAgentId(String memberId, String agentId, int amount) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("memberId").is(memberId));
+		query.addCriteria(Criteria.where("agentId").is(agentId));
+		Update update = new Update();
+		update.set("chaguanYushi", amount);
+		mongoTemplate.updateFirst(query, update, ChaguanMemberDbo.class);
+	}
+
 }
