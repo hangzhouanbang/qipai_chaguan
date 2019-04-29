@@ -452,13 +452,11 @@ public class GameService {
 
 		gameTable.setGame(Game.paodekuai);
 		if (lawNames.contains("sj")) {
-			gameTable.setPanCountPerJu(4);
-		} else if (lawNames.contains("bj")) {
-			gameTable.setPanCountPerJu(8);
-		} else if (lawNames.contains("slj")) {
-			gameTable.setPanCountPerJu(16);
+			gameTable.setPanCountPerJu(10);
+		} else if (lawNames.contains("esj")) {
+			gameTable.setPanCountPerJu(20);
 		} else {
-			gameTable.setPanCountPerJu(4);
+			gameTable.setPanCountPerJu(10);
 		}
 
 		if (lawNames.contains("er")) {
