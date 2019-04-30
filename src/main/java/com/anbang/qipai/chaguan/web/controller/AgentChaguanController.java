@@ -465,10 +465,17 @@ public class AgentChaguanController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
+		ChaguanDbo chaguanDbo = chaguanDboService.findChaguanDboById(chaguanId);
+		if (chaguanDbo == null) {
+			vo.setSuccess(false);
+			vo.setMsg("chaguan not found");
+			return vo;
+		}
 		ListPage listPage = memberChaguanYushiService.findFreeReportVOByMemberId(agentId, chaguanId, page, size);
 		Map data = new HashMap<>();
 		vo.setData(data);
 		data.put("listPage", listPage);
+		data.put("name", chaguanDbo.getName());
 		return vo;
 	}
 

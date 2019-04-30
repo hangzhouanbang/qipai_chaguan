@@ -13,6 +13,7 @@ import com.anbang.qipai.chaguan.cqrs.q.dao.MemberChaguanYushiRecordDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dao.MemberDboDao;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiRecordDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberDbo;
 import com.anbang.qipai.chaguan.web.vo.FreeReportVO;
 import com.dml.accounting.AccountingRecord;
 import com.highto.framework.web.page.ListPage;
@@ -76,7 +77,9 @@ public class MemberChaguanYushiService {
 			FreeReportVO vo = new FreeReportVO();
 			vo.setAccountId(account.getId());
 			vo.setMemberId(account.getMemberId());
-			vo.setNickname(memberDboDao.findById(account.getMemberId()).getNickname());
+			MemberDbo member = memberDboDao.findById(account.getMemberId());
+			vo.setNickname(member.getNickname());
+			vo.setHeadimgurl(member.getHeadimgurl());
 			vo.setCost(account.getBalance());
 			vo.setFreeCount((int) memberChaguanYushiRecordDboDao
 					.countByMemberIdAndLastestBalanceAfterLessThan(account.getMemberId(), 0));
