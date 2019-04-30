@@ -3,6 +3,9 @@ package com.anbang.qipai.chaguan.plan.dao.mongodb;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -78,6 +81,7 @@ public class MongodbGameTableDao implements GameTableDao {
 				.andOperator(Criteria.where("state").in(GameTableStateConfig.PLAYING, GameTableStateConfig.WAITING)));
 		query.skip((page - 1) * size);
 		query.limit(size);
+		query.with(new Sort(new Order(Direction.DESC, "createTime")));
 		return mongoTemplate.find(query, GameTable.class);
 	}
 
