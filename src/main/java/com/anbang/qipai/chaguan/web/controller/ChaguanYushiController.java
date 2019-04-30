@@ -39,10 +39,10 @@ public class ChaguanYushiController {
 	private ChaguanYushiService chaguanYushiService;
 
 	@Autowired
-	private AgentAuthService agentAuthService;
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
 
 	@Autowired
-	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
+	private AgentAuthService agentAuthService;
 
 	/**
 	 * 推广员查询茶馆玉石
@@ -79,7 +79,7 @@ public class ChaguanYushiController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
-		ListPage listPage = chaguanYushiService.findChaguanYushiRecordDbo(page, size, "玩家");
+		ListPage listPage = chaguanYushiService.findChaguanYushiRecordDbo(page, size, agentId, "玩家");
 		Map data = new HashMap<>();
 		vo.setData(data);
 		data.put("listPage", listPage);

@@ -119,8 +119,8 @@ spring:
           contentType: application/json
           producer:
             partitionCount: 1
-        authorization:
-          destination: authorization
+        agentAuthorization:
+          destination: agentAuthorization
           group: qipai-chaguan
           consumer:
             concurrency: 1

@@ -4,8 +4,8 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
 
 public interface AuthorizationSink {
-	String AUTHORIZATION = "authorization";
+	String AUTHORIZATION = "agentAuthorization";
 
 	@Input
-	SubscribableChannel authorization();
+	SubscribableChannel agentAuthorization();
 }

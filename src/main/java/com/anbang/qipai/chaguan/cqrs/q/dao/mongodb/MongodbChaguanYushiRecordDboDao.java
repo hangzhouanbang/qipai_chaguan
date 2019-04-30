@@ -26,15 +26,17 @@ public class MongodbChaguanYushiRecordDboDao implements ChaguanYushiRecordDboDao
 	}
 
 	@Override
-	public long countBySummary(String text) {
+	public long countByAgentIdAndSummary(String agentId, String text) {
 		Query query = new Query();
+		query.addCriteria(Criteria.where("agentId").is(agentId));
 		query.addCriteria(Criteria.where("summary.text").regex(text));
 		return mongoTemplate.count(query, ChaguanYushiRecordDbo.class);
 	}
 
 	@Override
-	public List<ChaguanYushiRecordDbo> findBySummary(int page, int size, String text) {
+	public List<ChaguanYushiRecordDbo> findByAgentIdAndSummary(int page, int size, String agentId, String text) {
 		Query query = new Query();
+		query.addCriteria(Criteria.where("agentId").is(agentId));
 		query.addCriteria(Criteria.where("summary.text").regex(text));
 		query.skip((page - 1) * size);
 		query.limit(size);

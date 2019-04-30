@@ -8,7 +8,7 @@ public interface ChaguanYushiRecordDboDao {
 
 	void insert(ChaguanYushiRecordDbo record);
 
-	long countBySummary(String text);
+	long countByAgentIdAndSummary(String agentId, String text);
 
-	List<ChaguanYushiRecordDbo> findBySummary(int page, int size, String text);
+	List<ChaguanYushiRecordDbo> findByAgentIdAndSummary(int page, int size, String agentId, String text);
 }

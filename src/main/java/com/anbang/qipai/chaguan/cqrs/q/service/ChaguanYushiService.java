@@ -37,9 +37,10 @@ public class ChaguanYushiService {
 		return chaguanYushiAccountDboDao.findByAgentId(agentId);
 	}
 
-	public ListPage findChaguanYushiRecordDbo(int page, int size, String text) {
-		int amount = (int) chaguanYushiRecordDboDao.countBySummary(text);
-		List<ChaguanYushiRecordDbo> recordList = chaguanYushiRecordDboDao.findBySummary(page, size, text);
+	public ListPage findChaguanYushiRecordDbo(int page, int size, String agentId, String text) {
+		int amount = (int) chaguanYushiRecordDboDao.countByAgentIdAndSummary(agentId, text);
+		List<ChaguanYushiRecordDbo> recordList = chaguanYushiRecordDboDao.findByAgentIdAndSummary(page, size, agentId,
+				text);
 		// for (int i = 0; i < recordList.size(); i++) {
 		// TextAccountingSummary summary = (TextAccountingSummary)
 		// recordList.get(i).getSummary();

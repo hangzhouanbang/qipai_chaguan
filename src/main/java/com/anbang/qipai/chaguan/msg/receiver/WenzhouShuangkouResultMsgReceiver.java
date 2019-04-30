@@ -8,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 
+import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
+import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
+import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
 import com.anbang.qipai.chaguan.msg.channel.sink.WenzhouShuangkouResultSink;
 import com.anbang.qipai.chaguan.msg.msjobs.CommonMO;
+import com.anbang.qipai.chaguan.msg.service.ChaguanYushiRecordMsgService;
 import com.anbang.qipai.chaguan.msg.service.MemberChaguanYushiRecordMsgService;
+import com.anbang.qipai.chaguan.plan.bean.FreeReport;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
 import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
@@ -25,11 +31,13 @@ import com.anbang.qipai.chaguan.plan.bean.historicalresult.GameJuPlayerResult;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.GamePanPlayerResult;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.puke.WenzhouShuangkouJuPlayerResult;
 import com.anbang.qipai.chaguan.plan.bean.historicalresult.puke.WenzhouShuangkouPanPlayerResult;
+import com.anbang.qipai.chaguan.plan.service.FreeReportService;
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalJuResultService;
 import com.anbang.qipai.chaguan.plan.service.GameHistoricalPanResultService;
 import com.anbang.qipai.chaguan.plan.service.GameService;
 import com.anbang.qipai.chaguan.web.fb.WzskLawsFB;
 import com.dml.accounting.AccountingRecord;
+import com.dml.accounting.InsufficientBalanceException;
 import com.google.gson.Gson;
 
 @EnableBinding(WenzhouShuangkouResultSink.class)
@@ -54,6 +62,18 @@ public class WenzhouShuangkouResultMsgReceiver {
 
 	@Autowired
 	private GameService gameService;
+
+	@Autowired
+	private AgentChaguanYushiCmdService agentChaguanYushiCmdService;
+
+	@Autowired
+	private ChaguanYushiService chaguanYushiService;
+
+	@Autowired
+	private ChaguanYushiRecordMsgService chaguanYushiRecordMsgService;
+
+	@Autowired
+	private FreeReportService freeReportService;
 
 	private Gson gson = new Gson();
 
@@ -129,15 +149,38 @@ public class WenzhouShuangkouResultMsgReceiver {
 	}
 
 	public void jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
+		WzskLawsFB fb = new WzskLawsFB(lawNames);
+		int gold = fb.payForCreateRoom();
 		try {
-			WzskLawsFB fb = new WzskLawsFB(lawNames);
-			int gold = fb.payForCreateRoom();
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdrawAnyway(memberId, agentId, gold,
-					"game ju finish", finishTime);
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, gold, "game ju finish",
+					finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
 			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (e instanceof InsufficientBalanceException) {
+				try {
+					AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, gold,
+							"free ju finish:" + memberId, finishTime);
+					ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(agentAr, agentId);
+					chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
+					MemberChaguanYushiAccountDbo account = memberChaguanYushiService
+							.findMemberChaguanYushiAccountDboByAgentIdAndMemebrId(agentId, memberId);
+					FreeReport report = freeReportService.findFreeReportById(account.getId());
+					if (report == null) {
+						report = new FreeReport();
+					}
+					report.setId(account.getId());
+					report.setMemberId(memberId);
+					report.setAgentId(agentId);
+					report.setFreeCount(report.getFreeCount() + 1);
+					report.setCost(report.getCost() + gold);
+					freeReportService.saveFreeReport(report);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			} else {
+				e.printStackTrace();
+			}
 		}
 	}
 }

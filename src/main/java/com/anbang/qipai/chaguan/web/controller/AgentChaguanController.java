@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.AgentNotFoundException;
 import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.ChaguanHasYushiAccountAlreadyException;
 import com.anbang.qipai.chaguan.cqrs.c.domain.chaguan.CreateChaguanYushiAccountResult;
-import com.anbang.qipai.chaguan.cqrs.c.domain.member.MemberNotFoundException;
 import com.anbang.qipai.chaguan.cqrs.c.service.AgentChaguanYushiCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.ChaguanCmdService;
 import com.anbang.qipai.chaguan.cqrs.c.service.MemberChaguanYushiCmdService;
@@ -22,9 +20,6 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanMemberDbo;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanStatus;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiAccountDbo;
-import com.anbang.qipai.chaguan.cqrs.q.dbo.ChaguanYushiRecordDbo;
-import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
-import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiRecordDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.AgentDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
@@ -40,10 +35,9 @@ import com.anbang.qipai.chaguan.plan.bean.ChaguanApplyStatus;
 import com.anbang.qipai.chaguan.plan.service.AgentAuthService;
 import com.anbang.qipai.chaguan.plan.service.ChaguanApplyService;
 import com.anbang.qipai.chaguan.plan.service.ChaguanMemberApplyService;
+import com.anbang.qipai.chaguan.plan.service.FreeReportService;
 import com.anbang.qipai.chaguan.web.vo.ChaguanVO;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
-import com.dml.accounting.AccountingRecord;
-import com.dml.accounting.InsufficientBalanceException;
 import com.highto.framework.web.page.ListPage;
 
 /**
@@ -92,6 +86,9 @@ public class AgentChaguanController {
 
 	@Autowired
 	private MemberChaguanYushiService memberChaguanYushiService;
+
+	@Autowired
+	private FreeReportService freeReportService;
 
 	@Autowired
 	private ChaguanMemberApplyService chaguanMemberApplyService;
@@ -471,7 +468,7 @@ public class AgentChaguanController {
 			vo.setMsg("chaguan not found");
 			return vo;
 		}
-		ListPage listPage = memberChaguanYushiService.findFreeReportVOByMemberId(agentId, chaguanId, page, size);
+		ListPage listPage = freeReportService.findFreeReportVOByMemberId(agentId, chaguanId, page, size);
 		Map data = new HashMap<>();
 		vo.setData(data);
 		data.put("listPage", listPage);
@@ -491,33 +488,45 @@ public class AgentChaguanController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
-		MemberChaguanYushiAccountDbo memberChaguanYushiAccountDbo = memberChaguanYushiService
-				.findMemberChaguanYushiAccountDboByAccountId(accountId);
-		try {
-			AccountingRecord agentRecord = agentChaguanYushiCmdService.withdraw(agentId,
-					memberChaguanYushiAccountDbo.getBalance(),
-					"agent clear:" + memberChaguanYushiAccountDbo.getMemberId(), System.currentTimeMillis());
-			ChaguanYushiRecordDbo cyrd = chaguanYushiService.withdraw(agentRecord, agentId);
-			chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(cyrd);
-			AccountingRecord memberRecord = memberChaguanYushiCmdService.giveYushiToMemberByAgent(
-					memberChaguanYushiAccountDbo.getMemberId(), agentId, -memberChaguanYushiAccountDbo.getBalance(),
-					"agent clear", System.currentTimeMillis());
-			MemberChaguanYushiRecordDbo mcyrd = memberChaguanYushiService.withdraw(memberRecord,
-					memberChaguanYushiAccountDbo.getMemberId(), agentId);
-			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(mcyrd);
-		} catch (MemberNotFoundException e) {
-			vo.setSuccess(false);
-			vo.setMsg("MemberNotFoundException");
-			return vo;
-		} catch (AgentNotFoundException e) {
-			vo.setSuccess(false);
-			vo.setMsg("AgentNotFoundException");
-			return vo;
-		} catch (InsufficientBalanceException e) {
-			vo.setSuccess(false);
-			vo.setMsg("InsufficientBalanceException");
-			return vo;
-		}
+		freeReportService.removeFreeReportById(accountId);
+		// MemberChaguanYushiAccountDbo memberChaguanYushiAccountDbo =
+		// memberChaguanYushiService
+		// .findMemberChaguanYushiAccountDboByAccountId(accountId);
+		// if (memberChaguanYushiAccountDbo.getBalance() > 0) {
+		// vo.setSuccess(false);
+		// vo.setMsg("balance error");
+		// return vo;
+		// }
+		// try {
+		// AccountingRecord agentRecord = agentChaguanYushiCmdService.withdraw(agentId,
+		// -memberChaguanYushiAccountDbo.getBalance(),
+		// "agent clear:" + memberChaguanYushiAccountDbo.getMemberId(),
+		// System.currentTimeMillis());
+		// ChaguanYushiRecordDbo cyrd = chaguanYushiService.withdraw(agentRecord,
+		// agentId);
+		// chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(cyrd);
+		// AccountingRecord memberRecord =
+		// memberChaguanYushiCmdService.giveYushiToMemberByAgent(
+		// memberChaguanYushiAccountDbo.getMemberId(), agentId,
+		// -memberChaguanYushiAccountDbo.getBalance(),
+		// "agent clear", System.currentTimeMillis());
+		// MemberChaguanYushiRecordDbo mcyrd =
+		// memberChaguanYushiService.withdraw(memberRecord,
+		// memberChaguanYushiAccountDbo.getMemberId(), agentId);
+		// memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(mcyrd);
+		// } catch (MemberNotFoundException e) {
+		// vo.setSuccess(false);
+		// vo.setMsg("MemberNotFoundException");
+		// return vo;
+		// } catch (AgentNotFoundException e) {
+		// vo.setSuccess(false);
+		// vo.setMsg("AgentNotFoundException");
+		// return vo;
+		// } catch (InsufficientBalanceException e) {
+		// vo.setSuccess(false);
+		// vo.setMsg("InsufficientBalanceException");
+		// return vo;
+		// }
 		return vo;
 	}
 }
