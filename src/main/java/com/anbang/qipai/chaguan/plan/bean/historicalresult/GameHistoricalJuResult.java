@@ -11,10 +11,19 @@ public class GameHistoricalJuResult {
 	private String roomNo;
 	private String dayingjiaId;
 	private String datuhaoId;
+	private String chaguanId;
 	private List<GameJuPlayerResult> playerResultList;
 	private int lastPanNo;
 	private int panshu;
 	private long finishTime;
+
+	public String getChaguanId() {
+		return chaguanId;
+	}
+
+	public void setChaguanId(String chaguanId) {
+		this.chaguanId = chaguanId;
+	}
 
 	public String getDayingjiaId() {
 		return dayingjiaId;

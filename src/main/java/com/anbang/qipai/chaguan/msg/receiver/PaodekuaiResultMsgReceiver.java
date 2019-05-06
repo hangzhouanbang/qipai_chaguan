@@ -95,6 +95,8 @@ public class PaodekuaiResultMsgReceiver {
 					majiangHistoricalResult.setGame(Game.paodekuai);
 					majiangHistoricalResult.setDayingjiaId((String) dyjId);
 					majiangHistoricalResult.setDatuhaoId((String) dthId);
+					majiangHistoricalResult.setChaguanId(table.getChaguanId());
+
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {

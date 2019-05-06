@@ -97,6 +97,8 @@ public class WenzhouShuangkouResultMsgReceiver {
 					pukeHistoricalResult.setGame(Game.wenzhouShuangkou);
 					pukeHistoricalResult.setDayingjiaId((String) dyjId);
 					pukeHistoricalResult.setDatuhaoId((String) dthId);
+					pukeHistoricalResult.setChaguanId(table.getChaguanId());
+
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {

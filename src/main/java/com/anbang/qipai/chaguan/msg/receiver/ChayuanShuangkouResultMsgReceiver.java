@@ -95,6 +95,7 @@ public class ChayuanShuangkouResultMsgReceiver {
 					pukeHistoricalResult.setGame(Game.chayuanShuangkou);
 					pukeHistoricalResult.setDayingjiaId((String) dyjId);
 					pukeHistoricalResult.setDatuhaoId((String) dthId);
+					pukeHistoricalResult.setChaguanId(table.getChaguanId());
 
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {

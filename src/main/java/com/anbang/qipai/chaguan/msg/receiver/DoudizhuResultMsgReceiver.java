@@ -95,6 +95,8 @@ public class DoudizhuResultMsgReceiver {
 					majiangHistoricalResult.setGame(Game.doudizhu);
 					majiangHistoricalResult.setDayingjiaId((String) dyjId);
 					majiangHistoricalResult.setDatuhaoId((String) dthId);
+					majiangHistoricalResult.setChaguanId(table.getChaguanId());
+
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {

@@ -89,12 +89,14 @@ public class DaboluoResultMsgReceiver {
 				GameTable table = gameService.findTableByGameAndServerGameGameId(Game.daboluo, gameId);
 				if (table != null) {
 					ChaguanDbo chaguan = chaguanDboService.findChaguanDboById(table.getChaguanId());
-					GameHistoricalJuResult majiangHistoricalResult = new GameHistoricalJuResult();
-					majiangHistoricalResult.setGameId(gameId);
-					majiangHistoricalResult.setRoomNo(table.getNo());
-					majiangHistoricalResult.setGame(Game.daboluo);
-					majiangHistoricalResult.setDayingjiaId((String) dyjId);
-					majiangHistoricalResult.setDatuhaoId((String) dthId);
+					GameHistoricalJuResult pukeHistoricalResult = new GameHistoricalJuResult();
+					pukeHistoricalResult.setGameId(gameId);
+					pukeHistoricalResult.setRoomNo(table.getNo());
+					pukeHistoricalResult.setGame(Game.daboluo);
+					pukeHistoricalResult.setDayingjiaId((String) dyjId);
+					pukeHistoricalResult.setDatuhaoId((String) dthId);
+					pukeHistoricalResult.setChaguanId(table.getChaguanId());
+
 					long finishTime = ((Double) map.get("finishTime")).longValue();
 					Object playerList = map.get("playerResultList");
 					if (playerList != null) {
@@ -104,13 +106,13 @@ public class DaboluoResultMsgReceiver {
 							jiesaun(chaguan.getAgentId(), playerId, finishTime);
 							juPlayerResultList.add(new DianpaoMajiangJuPlayerResult((Map) juPlayerResult));
 						});
-						majiangHistoricalResult.setPlayerResultList(juPlayerResultList);
+						pukeHistoricalResult.setPlayerResultList(juPlayerResultList);
 
-						majiangHistoricalResult.setPanshu(((Double) map.get("panshu")).intValue());
-						majiangHistoricalResult.setLastPanNo(((Double) map.get("lastPanNo")).intValue());
-						majiangHistoricalResult.setFinishTime(finishTime);
+						pukeHistoricalResult.setPanshu(((Double) map.get("panshu")).intValue());
+						pukeHistoricalResult.setLastPanNo(((Double) map.get("lastPanNo")).intValue());
+						pukeHistoricalResult.setFinishTime(finishTime);
 
-						majiangHistoricalResultService.addGameHistoricalResult(majiangHistoricalResult);
+						majiangHistoricalResultService.addGameHistoricalResult(pukeHistoricalResult);
 					}
 				}
 			}
