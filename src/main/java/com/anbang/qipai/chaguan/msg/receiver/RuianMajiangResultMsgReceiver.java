@@ -109,8 +109,13 @@ public class RuianMajiangResultMsgReceiver {
 						List<GameJuPlayerResult> juPlayerResultList = new ArrayList<>();
 						((List) map.get("playerResultList")).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
-							juPlayerResultList.add(new RuianMajiangJuPlayerResult((Map) juPlayerResult));
+							int chaguanyushi = jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
+							RuianMajiangJuPlayerResult pr = new RuianMajiangJuPlayerResult((Map) juPlayerResult);
+							juPlayerResultList.add(pr);
+							if (majiangHistoricalResult.getDayingjiaId().equals(playerId)) {
+								majiangHistoricalResultService.updateIncMemberDayResult(playerId, chaguan.getId(), 1,
+										chaguanyushi, pr.getTotalScore(), finishTime);
+							}
 						});
 						majiangHistoricalResult.setPlayerResultList(juPlayerResultList);
 
@@ -150,7 +155,7 @@ public class RuianMajiangResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
+	public int jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
 		RamjLawsFB fb = new RamjLawsFB(lawNames);
 		int gold = fb.payForCreateRoom();
 		try {
@@ -184,5 +189,6 @@ public class RuianMajiangResultMsgReceiver {
 				e.printStackTrace();
 			}
 		}
+		return gold;
 	}
 }

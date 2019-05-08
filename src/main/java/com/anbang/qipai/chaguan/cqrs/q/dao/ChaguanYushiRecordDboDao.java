@@ -11,4 +11,6 @@ public interface ChaguanYushiRecordDboDao {
 	long countByAgentIdAndSummary(String agentId, String text);
 
 	List<ChaguanYushiRecordDbo> findByAgentIdAndSummary(int page, int size, String agentId, String text);
+
+	int countCostByAgentIdAndSummaryAndTime(String agentId, String text, long startTime, long endTime);
 }

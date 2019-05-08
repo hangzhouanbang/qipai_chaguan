@@ -103,8 +103,13 @@ public class DaboluoResultMsgReceiver {
 						List<GameJuPlayerResult> juPlayerResultList = new ArrayList<>();
 						((List) playerList).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime);
-							juPlayerResultList.add(new DianpaoMajiangJuPlayerResult((Map) juPlayerResult));
+							int chaguanyushi = jiesaun(chaguan.getAgentId(), playerId, finishTime);
+							DianpaoMajiangJuPlayerResult pr = new DianpaoMajiangJuPlayerResult((Map) juPlayerResult);
+							juPlayerResultList.add(pr);
+							if (pukeHistoricalResult.getDayingjiaId().equals(playerId)) {
+								majiangHistoricalResultService.updateIncMemberDayResult(playerId, chaguan.getId(), 1,
+										chaguanyushi, pr.getTotalScore(), finishTime);
+							}
 						});
 						pukeHistoricalResult.setPlayerResultList(juPlayerResultList);
 
@@ -144,16 +149,17 @@ public class DaboluoResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime) {
+	public int jiesaun(String agentId, String memberId, long finishTime) {
+		int chaguanyushi = 100;
 		try {
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, 100, "game ju finish",
-					finishTime);
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, chaguanyushi,
+					"game ju finish", finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
 			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
 			if (e instanceof InsufficientBalanceException) {
 				try {
-					AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, 100,
+					AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, chaguanyushi,
 							"free ju finish:" + memberId, finishTime);
 					ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(agentAr, agentId);
 					chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
@@ -167,7 +173,7 @@ public class DaboluoResultMsgReceiver {
 					report.setMemberId(memberId);
 					report.setAgentId(agentId);
 					report.setFreeCount(report.getFreeCount() + 1);
-					report.setCost(report.getCost() + 100);
+					report.setCost(report.getCost() + chaguanyushi);
 					freeReportService.saveFreeReport(report);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -176,5 +182,6 @@ public class DaboluoResultMsgReceiver {
 				e.printStackTrace();
 			}
 		}
+		return chaguanyushi;
 	}
 }

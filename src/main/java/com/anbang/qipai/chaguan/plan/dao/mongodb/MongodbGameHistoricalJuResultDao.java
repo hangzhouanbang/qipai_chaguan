@@ -3,6 +3,7 @@ package com.anbang.qipai.chaguan.plan.dao.mongodb;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -76,6 +77,44 @@ public class MongodbGameHistoricalJuResultDao implements GameHistoricalJuResultD
 		} catch (Exception e) {
 			return 0;
 		}
+	}
+
+	@Override
+	public List<GameHistoricalJuResult> findGameHistoricalResultByMemberIdAndChaguanIdAndRoomNoAndTime(int page,
+			int size, String chaguanId, String memberId, String roomNo, long startTime, long endTime) {
+		Query query = new Query();
+		if (StringUtil.isNotBlank(memberId)) {
+			query.addCriteria(Criteria.where("dayingjiaId").is(memberId));
+		}
+		if (StringUtil.isNotBlank(roomNo)) {
+			query.addCriteria(Criteria.where("roomNo").is(roomNo));
+		}
+		if (StringUtil.isNotBlank(chaguanId)) {
+			query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		}
+		query.addCriteria(Criteria.where("finishTime").gt(startTime).lt(endTime));
+		Sort sort = new Sort(new Order(Direction.DESC, "finishTime"));
+		query.with(sort);
+		query.skip((page - 1) * size);
+		query.limit(size);
+		return mongoTemplate.find(query, GameHistoricalJuResult.class);
+	}
+
+	@Override
+	public long getAmountByMemberIdAndChaguanIdAndAndRoomNoTime(String chaguanId, String memberId, String roomNo,
+			long startTime, long endTime) {
+		Query query = new Query();
+		if (StringUtil.isNotBlank(memberId)) {
+			query.addCriteria(Criteria.where("dayingjiaId").is(memberId));
+		}
+		if (StringUtil.isNotBlank(roomNo)) {
+			query.addCriteria(Criteria.where("roomNo").is(roomNo));
+		}
+		if (StringUtil.isNotBlank(chaguanId)) {
+			query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		}
+		query.addCriteria(Criteria.where("finishTime").gt(startTime).lt(endTime));
+		return mongoTemplate.count(query, GameHistoricalJuResult.class);
 	}
 
 }

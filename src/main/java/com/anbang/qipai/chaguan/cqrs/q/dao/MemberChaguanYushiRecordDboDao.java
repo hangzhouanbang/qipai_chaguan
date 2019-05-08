@@ -10,4 +10,7 @@ public interface MemberChaguanYushiRecordDboDao {
 	 * 统计玩家最近余额小于balanceAfter的交易总数
 	 */
 	long countByMemberIdAndLastestBalanceAfterLessThan(String memberId, int balanceAfter);
+
+	int countCostByMemberIdAndAgentIdAndSummaryAndTime(String memberId, String agentId, String text, long startTime,
+			long endTime);
 }

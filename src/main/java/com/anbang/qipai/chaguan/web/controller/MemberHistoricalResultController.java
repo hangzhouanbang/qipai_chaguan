@@ -47,6 +47,74 @@ public class MemberHistoricalResultController {
 	@Autowired
 	private PlayBackDboService playBackDboService;
 
+	/**
+	 * 战绩查询未完成
+	 */
+	@RequestMapping(value = "/query_member_dayresult")
+	public CommonVO queryMemberDayResult(@RequestParam(name = "startTime", required = true) long startTime,
+			@RequestParam(name = "endTime", required = true) long endTime,
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size, String chaguanId) {
+		CommonVO vo = new CommonVO();
+		ListPage listPage = majiangHistoricalResultService.findMemberDayResultByTimeAndChaguanId(startTime, endTime,
+				page, size, chaguanId);
+		vo.setSuccess(true);
+		vo.setMsg("historical result");
+		Map data = new HashMap();
+		vo.setData(data);
+		data.put("listPage", listPage);
+		return vo;
+	}
+
+	/**
+	 * 战绩完成
+	 */
+	@RequestMapping(value = "/finish_member_dayresult")
+	public CommonVO finishMemberDayResult(String resultId) {
+		CommonVO vo = new CommonVO();
+		majiangHistoricalResultService.finishMemberDayResultById(resultId);
+		vo.setSuccess(true);
+		return vo;
+	}
+
+	/**
+	 * 战绩详情
+	 */
+	@RequestMapping(value = "/query_member_historicalresult")
+	public CommonVO queryMemberHistoricalResult(@RequestParam(name = "startTime", required = true) long startTime,
+			@RequestParam(name = "endTime", required = true) long endTime,
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size, String chaguanId, String memberId) {
+		CommonVO vo = new CommonVO();
+		ListPage listPage = majiangHistoricalResultService.findGameHistoricalResultByMemberIdAndChaguanId(startTime,
+				endTime, page, size, memberId, chaguanId);
+		vo.setSuccess(true);
+		vo.setMsg("historical result");
+		Map data = new HashMap();
+		vo.setData(data);
+		data.put("listPage", listPage);
+		return vo;
+	}
+
+	/**
+	 * 战绩查询已完成
+	 */
+	@RequestMapping(value = "/query_member_historicaldayresult")
+	public CommonVO queryMemberHistoricalResult(@RequestParam(name = "startTime", required = true) long startTime,
+			@RequestParam(name = "endTime", required = true) long endTime,
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size, String chaguanId) {
+		CommonVO vo = new CommonVO();
+		ListPage listPage = majiangHistoricalResultService.findMemberDayHistoricalResultByTimeAndChaguanId(startTime,
+				endTime, page, size, chaguanId);
+		vo.setSuccess(true);
+		vo.setMsg("historical result");
+		Map data = new HashMap();
+		vo.setData(data);
+		data.put("listPage", listPage);
+		return vo;
+	}
+
 	@RequestMapping(value = "/query_historicalresult")
 	public CommonVO queryHistoricalResult(@RequestParam(name = "page", defaultValue = "1") Integer page,
 			@RequestParam(name = "size", defaultValue = "20") Integer size, String token) {

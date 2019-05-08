@@ -93,4 +93,28 @@ public class WenzhouShuangkouJuPlayerResult implements GameJuPlayerResult {
 		this.totalScore = totalScore;
 	}
 
+	@Override
+	public String playerId() {
+		// TODO Auto-generated method stub
+		return playerId;
+	}
+
+	@Override
+	public String nickname() {
+		// TODO Auto-generated method stub
+		return nickname;
+	}
+
+	@Override
+	public String headimgurl() {
+		// TODO Auto-generated method stub
+		return headimgurl;
+	}
+
+	@Override
+	public int totalScore() {
+		// TODO Auto-generated method stub
+		return totalScore;
+	}
+
 }

@@ -109,8 +109,14 @@ public class WenzhouShuangkouResultMsgReceiver {
 						List<GameJuPlayerResult> juPlayerResultList = new ArrayList<>();
 						((List) playerList).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
-							juPlayerResultList.add(new WenzhouShuangkouJuPlayerResult((Map) juPlayerResult));
+							int chaguanyushi = jiesaun(chaguan.getAgentId(), playerId, finishTime, laws);
+							WenzhouShuangkouJuPlayerResult pr = new WenzhouShuangkouJuPlayerResult(
+									(Map) juPlayerResult);
+							juPlayerResultList.add(pr);
+							if (pukeHistoricalResult.getDayingjiaId().equals(playerId)) {
+								gameHistoricalResultService.updateIncMemberDayResult(playerId, chaguan.getId(), 1,
+										chaguanyushi, pr.getTotalScore(), finishTime);
+							}
 						});
 						pukeHistoricalResult.setPlayerResultList(juPlayerResultList);
 
@@ -150,7 +156,7 @@ public class WenzhouShuangkouResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
+	public int jiesaun(String agentId, String memberId, long finishTime, List<String> lawNames) {
 		WzskLawsFB fb = new WzskLawsFB(lawNames);
 		int gold = fb.payForCreateRoom();
 		try {
@@ -184,5 +190,6 @@ public class WenzhouShuangkouResultMsgReceiver {
 				e.printStackTrace();
 			}
 		}
+		return gold;
 	}
 }

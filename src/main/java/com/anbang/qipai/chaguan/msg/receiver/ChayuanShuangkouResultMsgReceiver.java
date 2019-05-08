@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 @EnableBinding(ChayuanShuangkouResultSink.class)
 public class ChayuanShuangkouResultMsgReceiver {
+
 	@Autowired
 	private GameHistoricalJuResultService gameHistoricalResultService;
 
@@ -103,8 +104,14 @@ public class ChayuanShuangkouResultMsgReceiver {
 						long finishTime = ((Double) map.get("finishTime")).longValue();
 						((List) playerList).forEach((juPlayerResult) -> {
 							String playerId = (String) ((Map) juPlayerResult).get("playerId");
-							jiesaun(chaguan.getAgentId(), playerId, finishTime);
-							juPlayerResultList.add(new ChayuanShuangkouJuPlayerResult((Map) juPlayerResult));
+							int chaguanyushi = jiesaun(chaguan.getAgentId(), playerId, finishTime);
+							ChayuanShuangkouJuPlayerResult pr = new ChayuanShuangkouJuPlayerResult(
+									(Map) juPlayerResult);
+							juPlayerResultList.add(pr);
+							if (pukeHistoricalResult.getDayingjiaId().equals(playerId)) {
+								gameHistoricalResultService.updateIncMemberDayResult(playerId, chaguan.getId(), 1,
+										chaguanyushi, pr.getTotalScore(), finishTime);
+							}
 						});
 						pukeHistoricalResult.setPlayerResultList(juPlayerResultList);
 
@@ -144,16 +151,17 @@ public class ChayuanShuangkouResultMsgReceiver {
 		}
 	}
 
-	public void jiesaun(String agentId, String memberId, long finishTime) {
+	public int jiesaun(String agentId, String memberId, long finishTime) {
+		int chaguanyushi = 100;
 		try {
-			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, 100, "game ju finish",
-					finishTime);
+			AccountingRecord memberAr = memberChaguanYushiCmdService.withdraw(memberId, agentId, chaguanyushi,
+					"game ju finish", finishTime);
 			MemberChaguanYushiRecordDbo memberRecord = memberChaguanYushiService.withdraw(memberAr, memberId, agentId);
 			memberChaguanYushiRecordMsgService.recordMemberChaguanYushiRecordDbo(memberRecord);
 		} catch (Exception e) {
 			if (e instanceof InsufficientBalanceException) {
 				try {
-					AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, 100,
+					AccountingRecord agentAr = agentChaguanYushiCmdService.withdraw(agentId, chaguanyushi,
 							"free ju finish:" + memberId, finishTime);
 					ChaguanYushiRecordDbo dbo = chaguanYushiService.withdraw(agentAr, agentId);
 					chaguanYushiRecordMsgService.recordChaguanYushiRecordDbo(dbo);
@@ -167,7 +175,7 @@ public class ChayuanShuangkouResultMsgReceiver {
 					report.setMemberId(memberId);
 					report.setAgentId(agentId);
 					report.setFreeCount(report.getFreeCount() + 1);
-					report.setCost(report.getCost() + 100);
+					report.setCost(report.getCost() + chaguanyushi);
 					freeReportService.saveFreeReport(report);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -176,5 +184,6 @@ public class ChayuanShuangkouResultMsgReceiver {
 				e.printStackTrace();
 			}
 		}
+		return chaguanyushi;
 	}
 }
