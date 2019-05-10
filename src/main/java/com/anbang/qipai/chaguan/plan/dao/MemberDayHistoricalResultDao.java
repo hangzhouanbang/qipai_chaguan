@@ -8,10 +8,10 @@ public interface MemberDayHistoricalResultDao {
 
 	void save(MemberDayHistoricalResult result);
 
-	long countByChaguanIdAndTime(String chaguanId, long startTime, long endTime);
+	long countByChaguanIdAndMemberIdAndTime(String chaguanId, String memberId, long startTime, long endTime);
 
-	List<MemberDayHistoricalResult> findByChaguanIdAndTime(int page, int size, String chaguanId, long startTime,
-			long endTime);
+	List<MemberDayHistoricalResult> findByChaguanIdAndMemberIdAndTime(int page, int size, String chaguanId,
+			String memberId, long startTime, long endTime);
 
 	MemberDayHistoricalResult findByPlayerIdAndTime(String playerId, long startTime, long endTime);
 

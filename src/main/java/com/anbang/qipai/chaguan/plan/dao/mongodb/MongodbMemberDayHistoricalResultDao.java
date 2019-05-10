@@ -2,6 +2,7 @@ package com.anbang.qipai.chaguan.plan.dao.mongodb;
 
 import java.util.List;
 
+import org.eclipse.jetty.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -27,18 +28,28 @@ public class MongodbMemberDayHistoricalResultDao implements MemberDayHistoricalR
 	}
 
 	@Override
-	public long countByChaguanIdAndTime(String chaguanId, long startTime, long endTime) {
+	public long countByChaguanIdAndMemberIdAndTime(String chaguanId, String memberId, long startTime, long endTime) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		if (StringUtil.isNotBlank(chaguanId)) {
+			query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		}
+		if (StringUtil.isNotBlank(memberId)) {
+			query.addCriteria(Criteria.where("playerId").is(memberId));
+		}
 		query.addCriteria(Criteria.where("createTime").gt(startTime).lt(endTime));
 		return mongoTemplate.count(query, MemberDayHistoricalResult.class);
 	}
 
 	@Override
-	public List<MemberDayHistoricalResult> findByChaguanIdAndTime(int page, int size, String chaguanId, long startTime,
-			long endTime) {
+	public List<MemberDayHistoricalResult> findByChaguanIdAndMemberIdAndTime(int page, int size, String chaguanId,
+			String memberId, long startTime, long endTime) {
 		Query query = new Query();
-		query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		if (StringUtil.isNotBlank(chaguanId)) {
+			query.addCriteria(Criteria.where("chaguanId").is(chaguanId));
+		}
+		if (StringUtil.isNotBlank(memberId)) {
+			query.addCriteria(Criteria.where("playerId").is(memberId));
+		}
 		query.addCriteria(Criteria.where("createTime").gt(startTime).lt(endTime));
 		query.skip((page - 1) * size);
 		query.limit(size);

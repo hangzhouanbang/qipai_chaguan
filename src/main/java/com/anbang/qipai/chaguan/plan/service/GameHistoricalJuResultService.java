@@ -1,5 +1,6 @@
 package com.anbang.qipai.chaguan.plan.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +91,31 @@ public class GameHistoricalJuResultService {
 		return listPage;
 	}
 
-	public ListPage findGameHistoricalResultByMemberIdAndChaguanId(long startTime, long endTime, int page, int size,
-			String memberId, String chaguanId) {
+	public ListPage findGameHistoricalResultByMemberIdAndChaguanIdForMemberDayResult(long startTime, long endTime,
+			int page, int size, String memberId, String chaguanId) {
+		MemberDayHistoricalResult result = memberDayHistoricalResultDao.findByPlayerIdAndTime(memberId, startTime,
+				endTime);
+		if (result != null) {
+			startTime = result.getCreateTime();
+		}
+		long amount = majiangHistoricalResultDao.getAmountByMemberIdAndChaguanIdAndAndRoomNoTime(chaguanId, memberId,
+				null, startTime, endTime);
+		List<GameHistoricalJuResult> list = majiangHistoricalResultDao
+				.findGameHistoricalResultByMemberIdAndChaguanIdAndRoomNoAndTime(page, size, chaguanId, memberId, null,
+						startTime, endTime);
+		ListPage listPage = new ListPage(list, page, size, (int) amount);
+		return listPage;
+	}
+
+	public ListPage findGameHistoricalResultByMemberIdAndChaguanIdForMemberDayHistoricalResult(long startTime,
+			long endTime, int page, int size, String memberId, String chaguanId) {
+		MemberDayHistoricalResult result = memberDayHistoricalResultDao.findByPlayerIdAndTime(memberId, startTime,
+				endTime);
+		if (result != null) {
+			endTime = result.getCreateTime();
+		} else {
+			return new ListPage(new ArrayList<>(), page, size, 0);
+		}
 		long amount = majiangHistoricalResultDao.getAmountByMemberIdAndChaguanIdAndAndRoomNoTime(chaguanId, memberId,
 				null, startTime, endTime);
 		List<GameHistoricalJuResult> list = majiangHistoricalResultDao
@@ -102,19 +126,20 @@ public class GameHistoricalJuResultService {
 	}
 
 	public ListPage findMemberDayResultByTimeAndChaguanId(long startTime, long endTime, int page, int size,
-			String chaguanId) {
-		long amount = memberDayResultDao.countByChaguanIdAndTime(chaguanId, startTime, endTime);
-		List<MemberDayResult> list = memberDayResultDao.findByChaguanIdAndTime(page, size, chaguanId, startTime,
-				endTime);
+			String chaguanId, String memberId) {
+		long amount = memberDayResultDao.countByChaguanIdAndMemberIdAndTime(chaguanId, memberId, startTime, endTime);
+		List<MemberDayResult> list = memberDayResultDao.findByChaguanIdAndMemberIdAndTime(page, size, chaguanId,
+				memberId, startTime, endTime);
 		ListPage listPage = new ListPage(list, page, size, (int) amount);
 		return listPage;
 	}
 
 	public ListPage findMemberDayHistoricalResultByTimeAndChaguanId(long startTime, long endTime, int page, int size,
-			String chaguanId) {
-		long amount = memberDayHistoricalResultDao.countByChaguanIdAndTime(chaguanId, startTime, endTime);
-		List<MemberDayHistoricalResult> list = memberDayHistoricalResultDao.findByChaguanIdAndTime(page, size,
-				chaguanId, startTime, endTime);
+			String chaguanId, String memberId) {
+		long amount = memberDayHistoricalResultDao.countByChaguanIdAndMemberIdAndTime(chaguanId, memberId, startTime,
+				endTime);
+		List<MemberDayHistoricalResult> list = memberDayHistoricalResultDao.findByChaguanIdAndMemberIdAndTime(page,
+				size, chaguanId, memberId, startTime, endTime);
 		ListPage listPage = new ListPage(list, page, size, (int) amount);
 		return listPage;
 	}
