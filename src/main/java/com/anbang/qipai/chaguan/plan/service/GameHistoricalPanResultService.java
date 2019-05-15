@@ -20,11 +20,15 @@ public class GameHistoricalPanResultService {
 		majiangHistoricalPanResultDao.addGameHistoricalResult(result);
 	}
 
-	public ListPage findGameHistoricalResultByMemberId(int page, int size, String gameId, Game game) {
+	public ListPage findGameHistoricalResultByGameIdAndGame(int page, int size, String gameId, Game game) {
 		long amount = majiangHistoricalPanResultDao.getAmountByGameIdAndGame(gameId, game);
 		List<GameHistoricalPanResult> list = majiangHistoricalPanResultDao.findGameHistoricalResultByGameIdAndGame(page,
 				size, gameId, game);
 		ListPage listPage = new ListPage(list, page, size, (int) amount);
 		return listPage;
+	}
+
+	public int countFinishPanResultByGameIdAndGame(Game game, String gameId) {
+		return (int) majiangHistoricalPanResultDao.getAmountByGameIdAndGame(gameId, game);
 	}
 }

@@ -83,6 +83,116 @@ spring:
                   ms: 5
                 batch:
                   size: 16384
+          chaguanDataReport:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          ruianGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          fangpaoGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          wenzhouGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          dianpaoGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          wenzhouShuangkouGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          chayuanShuangkouGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          doudizhuGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          daboluoGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          paodekuaiGameRoom:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
+          gameTable:
+            producer:
+              configuration:
+                request:
+                  timeout:
+                    ms: 30000
+                linger:
+                  ms: 5
+                batch:
+                  size: 16384
       bindings:
         chaguanApply:
           destination: chaguanApply
@@ -154,6 +264,56 @@ spring:
             concurrency: 1
             partitioned: false
           contentType: application/json
+        gameTable:
+          destination: gameTable
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        ruianGameRoom:
+          destination: ruianGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        fangpaoGameRoom:
+          destination: fangpaoGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        wenzhouGameRoom:
+          destination: wenzhouGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        dianpaoGameRoom:
+          destination: dianpaoGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        wenzhouShuangkouGameRoom:
+          destination: wenzhouShuangkouGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        chayuanShuangkouGameRoom:
+          destination: chayuanShuangkouGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        doudizhuGameRoom:
+          destination: doudizhuGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        daboluoGameRoom:
+          destination: daboluoGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
+        paodekuaiGameRoom:
+          destination: paodekuaiGameRoom
+          contentType: application/json
+          producer:
+            partitionCount: 1
         chayuanShuangkouGame:
           destination: chayuanShuangkouGame
           group: qipai-chaguan
@@ -287,6 +447,11 @@ spring:
             concurrency: 1
             partitioned: false
           contentType: application/json
+        chaguanDataReport:
+          destination: chaguanDataReport
+          contentType: application/json
+          producer:
+            partitionCount: 1
   application:
     name: qipai-chaguan
 server:

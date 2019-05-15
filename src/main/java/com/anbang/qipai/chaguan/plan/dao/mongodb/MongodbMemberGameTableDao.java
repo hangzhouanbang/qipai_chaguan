@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
@@ -82,6 +83,16 @@ public class MongodbMemberGameTableDao implements MemberGameTableDao {
 		Query query = new Query(Criteria.where("gameTable.game").is(game));
 		query.addCriteria(Criteria.where("gameTable.serverGame.gameId").is(serverGameId));
 		return mongoTemplate.find(query, MemberGameTable.class);
+	}
+
+	@Override
+	public void updateMemberGameTableCurrentPanNum(Game game, String serverGameId, List<String> playerIds, int no) {
+		Query query = new Query(Criteria.where("memberId").in(playerIds));
+		query.addCriteria(Criteria.where("gameTable.game").is(game)
+				.andOperator(Criteria.where("gameTable.serverGame.gameId").is(serverGameId)));
+		Update update = new Update();
+		update.set("gameTable.currentPanNum", no);
+		mongoTemplate.updateMulti(query, update, MemberGameTable.class);
 	}
 
 }

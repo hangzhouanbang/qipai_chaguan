@@ -22,6 +22,10 @@ public class DblLawsFB {
 		lawNames.forEach((lawName) -> {
 			if (lawName.equals("shj")) {// 十局
 				panshu = "10";
+			} else if (lawName.equals("sij")) {// 四局
+				panshu = "4";
+			} else if (lawName.equals("yj")) {// 一局
+				panshu = "1";
 			} else if (lawName.equals("esj")) {// 二十局
 				panshu = "20";
 			} else if (lawName.equals("sansj")) {// 三十局

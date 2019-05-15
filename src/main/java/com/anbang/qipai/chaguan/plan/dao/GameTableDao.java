@@ -21,4 +21,8 @@ public interface GameTableDao {
 
 	void updateStateGameTable(Game game, String serverGameId, String state);
 
+	void updateGameTableDeadlineTime(Game game, String serverGameId, long deadlineTime);
+
+	void updateGameTableCurrentPanNum(Game game, String serverGameId, int no);
+
 }

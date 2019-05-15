@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,16 @@ import com.anbang.qipai.chaguan.cqrs.q.dbo.MemberChaguanYushiAccountDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanMemberDboService;
 import com.anbang.qipai.chaguan.cqrs.q.service.ChaguanYushiService;
 import com.anbang.qipai.chaguan.cqrs.q.service.MemberChaguanYushiService;
+import com.anbang.qipai.chaguan.msg.service.ChayuanShuangkouGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.DaboluoGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.DianpaoGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.DoudizhuGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.FangpaoGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.GameTableMsgService;
+import com.anbang.qipai.chaguan.msg.service.PaodekuaiGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.RuianGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.WenzhouGameRoomMsgService;
+import com.anbang.qipai.chaguan.msg.service.WenzhouShuangkouGameRoomMsgService;
 import com.anbang.qipai.chaguan.plan.bean.ChaguanMemberPayType;
 import com.anbang.qipai.chaguan.plan.bean.MemberLoginLimitRecord;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
@@ -79,7 +91,37 @@ public class GamePlayerController {
 	private GameTableCmdService gameTableCmdService;
 
 	@Autowired
+	private GameTableMsgService gameTableMsgService;
+
+	@Autowired
 	private MemberLoginLimitRecordService memberLoginLimitRecordService;
+
+	@Autowired
+	private RuianGameRoomMsgService ruianGameRoomMsgService;
+
+	@Autowired
+	private FangpaoGameRoomMsgService fangpaoGameRoomMsgService;
+
+	@Autowired
+	private WenzhouGameRoomMsgService wenzhouGameRoomMsgService;
+
+	@Autowired
+	private DianpaoGameRoomMsgService dianpaoGameRoomMsgService;
+
+	@Autowired
+	private WenzhouShuangkouGameRoomMsgService wenzhouShuangkouGameRoomMsgService;
+
+	@Autowired
+	private ChayuanShuangkouGameRoomMsgService chayuanShuangkouGameRoomMsgService;
+
+	@Autowired
+	private DoudizhuGameRoomMsgService doudizhuGameRoomMsgService;
+
+	@Autowired
+	private PaodekuaiGameRoomMsgService paodekuaiGameRoomMsgService;
+
+	@Autowired
+	private DaboluoGameRoomMsgService daboluoGameRoomMsgService;
 
 	@Autowired
 	private HttpClient httpClient;
@@ -165,6 +207,7 @@ public class GamePlayerController {
 		gameTable.setNo(roomNo);
 
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -257,6 +300,7 @@ public class GamePlayerController {
 		gameTable.setNo(roomNo);
 
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -352,6 +396,7 @@ public class GamePlayerController {
 		gameTable.setNo(roomNo);
 
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -449,6 +494,7 @@ public class GamePlayerController {
 
 		// 将带roomNo的gameRoom写入数据库
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -551,6 +597,7 @@ public class GamePlayerController {
 		gameTable.setNo(roomNo);
 
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -645,6 +692,7 @@ public class GamePlayerController {
 
 		// 将带roomNo的gameRoom写入数据库
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -743,6 +791,7 @@ public class GamePlayerController {
 
 		// 将带roomNo的gameRoom写入数据库
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -828,6 +877,7 @@ public class GamePlayerController {
 
 		// 将带roomNo的gameRoom写入数据库
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -922,6 +972,7 @@ public class GamePlayerController {
 
 		// 将带roomNo的gameRoom写入数据库
 		gameService.createGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
 		data.put("wsUrl", gameTable.getServerGame().getServer().getWsUrl());
@@ -1045,6 +1096,7 @@ public class GamePlayerController {
 			return vo;
 		}
 		gameService.joinGameTable(gameTable, memberId);
+		gameTableMsgService.recordGameTable(gameTable);
 
 		Map data = new HashMap();
 		data.put("httpUrl", gameTable.getServerGame().getServer().getHttpUrl());
@@ -1082,5 +1134,34 @@ public class GamePlayerController {
 		List<GameTableVO> tableList = gameService.findGameTableByChaguanId(chaguanId, page, size);
 		data.put("tableList", tableList);
 		return vo;
+	}
+
+	/**
+	 * 房间到时定时器，每小时
+	 */
+	@Scheduled(cron = "0 0 0/1 * * ?")
+	public void removeGameRoom() {
+		long deadlineTime = System.currentTimeMillis();
+		List<GameTable> tableList = gameService.findExpireGameTable(deadlineTime);
+		Map<Game, List<String>> gameIdMap = new HashMap<>();
+		for (Game game : Game.values()) {
+			gameIdMap.put(game, new ArrayList<>());
+		}
+		for (GameTable table : tableList) {
+			Game game = table.getGame();
+			String serverGameId = table.getServerGame().getGameId();
+			if (!StringUtils.isBlank(serverGameId)) {
+				gameIdMap.get(game).add(serverGameId);
+			}
+		}
+		ruianGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.ruianMajiang));
+		fangpaoGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.fangpaoMajiang));
+		wenzhouGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.wenzhouMajiang));
+		dianpaoGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.dianpaoMajiang));
+		wenzhouShuangkouGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.wenzhouShuangkou));
+		doudizhuGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.doudizhu));
+		paodekuaiGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.paodekuai));
+		daboluoGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.daboluo));
+		chayuanShuangkouGameRoomMsgService.removeGameRoom(gameIdMap.get(Game.chayuanShuangkou));
 	}
 }

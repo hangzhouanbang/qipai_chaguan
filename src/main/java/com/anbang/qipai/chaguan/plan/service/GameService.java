@@ -109,6 +109,7 @@ public class GameService {
 			gameTable.setPlayersCount(4);
 		}
 		gameTable.setCreateTime(System.currentTimeMillis());
+		gameTable.setDeadlineTime(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 		return gameTable;
 	}
 
@@ -575,7 +576,7 @@ public class GameService {
 		gameTableDao.save(gameTable);
 	}
 
-	public void createGameTable(GameTable gameTable, String createMemberId) {
+	public MemberGameTable createGameTable(GameTable gameTable, String createMemberId) {
 		gameTableDao.save(gameTable);
 		MemberDbo member = memberDboDao.findById(createMemberId);
 		MemberGameTable mgr = new MemberGameTable();
@@ -584,13 +585,14 @@ public class GameService {
 		mgr.setNickname(member.getNickname());
 		mgr.setHeadimgurl(member.getHeadimgurl());
 		memberGameTableDao.save(mgr);
+		return mgr;
 	}
 
 	public GameTable findTableOpen(String roomNo) {
 		return gameTableDao.findTableOpen(roomNo);
 	}
 
-	public void joinGameTable(GameTable gameTable, String memberId) {
+	public MemberGameTable joinGameTable(GameTable gameTable, String memberId) {
 		MemberDbo member = memberDboDao.findById(memberId);
 		MemberGameTable mgr = new MemberGameTable();
 		mgr.setGameTable(gameTable);
@@ -598,15 +600,25 @@ public class GameService {
 		mgr.setNickname(member.getNickname());
 		mgr.setHeadimgurl(member.getHeadimgurl());
 		memberGameTableDao.save(mgr);
+		return mgr;
 	}
 
 	public MemberGameTable findMemberGameTable(String memberId, String gameTableId) {
 		return memberGameTableDao.findByMemberIdAndGameTableId(memberId, gameTableId);
 	}
 
+	public List<MemberGameTable> findMemberGameTableByGameAndServerGameId(Game game, String serverGameId) {
+		return memberGameTableDao.findMemberGameTableByGameAndServerGameId(game, serverGameId);
+	}
+
 	public void gameTableFinished(Game game, String serverGameId) {
 		gameTableDao.updateStateGameTable(game, serverGameId, GameTableStateConfig.FINISH);
 		memberGameTableDao.removeExpireRoom(game, serverGameId);
+	}
+
+	public void panFinished(Game game, String serverGameId, int no, List<String> playerIds) {
+		gameTableDao.updateGameTableCurrentPanNum(game, serverGameId, no);
+		memberGameTableDao.updateMemberGameTableCurrentPanNum(game, serverGameId, playerIds, no);
 	}
 
 	public List<GameTableVO> findGameTableByChaguanId(String chaguanId, int page, int size) {
@@ -642,5 +654,18 @@ public class GameService {
 
 	public GameTable findTableByGameAndServerGameGameId(Game game, String serverGameId) {
 		return gameTableDao.findTableByGameAndServerGameGameId(game, serverGameId);
+	}
+
+	public List<GameTable> findExpireGameTable(long deadlineTime) {
+		List<GameTable> tableList = gameTableDao.findExpireGameTable(deadlineTime, GameTableStateConfig.PLAYING);
+		tableList.addAll(gameTableDao.findExpireGameTable(deadlineTime, GameTableStateConfig.WAITING));
+		return tableList;
+	}
+
+	/**
+	 * 延长游戏房间
+	 */
+	public void delayGameTable(Game game, String serverGameId, long deadlineTime) {
+		gameTableDao.updateGameTableDeadlineTime(game, serverGameId, deadlineTime);
 	}
 }

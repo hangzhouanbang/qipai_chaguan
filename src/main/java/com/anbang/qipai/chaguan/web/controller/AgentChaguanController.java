@@ -265,6 +265,7 @@ public class AgentChaguanController {
 		dbo.setDesc(desc);
 		dbo.setMemberNum(0);
 		dbo.setStatus(ChaguanStatus.NORMAL);
+		dbo.setCreateTime(System.currentTimeMillis());
 		chaguanDboService.addChaguanDbo(dbo);
 		chaguanMsgService.createChaguan(dbo);
 		return vo;

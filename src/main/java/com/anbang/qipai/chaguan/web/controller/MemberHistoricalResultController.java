@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.anbang.qipai.chaguan.cqrs.c.service.PlayBackCodeCmdService;
 import com.anbang.qipai.chaguan.cqrs.q.dbo.PlayBackDbo;
 import com.anbang.qipai.chaguan.cqrs.q.service.PlayBackDboService;
+import com.anbang.qipai.chaguan.msg.service.GameDataReportMsgService;
 import com.anbang.qipai.chaguan.plan.bean.game.Game;
 import com.anbang.qipai.chaguan.plan.bean.game.GameServer;
 import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
@@ -22,6 +24,7 @@ import com.anbang.qipai.chaguan.plan.service.GameHistoricalPanResultService;
 import com.anbang.qipai.chaguan.plan.service.GameService;
 import com.anbang.qipai.chaguan.plan.service.MemberAuthService;
 import com.anbang.qipai.chaguan.web.vo.CommonVO;
+import com.anbang.qipai.chaguan.web.vo.GameDataReportVO;
 import com.highto.framework.web.page.ListPage;
 
 @CrossOrigin
@@ -46,6 +49,9 @@ public class MemberHistoricalResultController {
 
 	@Autowired
 	private PlayBackDboService playBackDboService;
+
+	@Autowired
+	private GameDataReportMsgService gameDataReportMsgService;
 
 	/**
 	 * 战绩查询未完成
@@ -180,8 +186,8 @@ public class MemberHistoricalResultController {
 			vo.setMsg("invalid token");
 			return vo;
 		}
-		ListPage listPage = majiangHistoricalPanResultService.findGameHistoricalResultByMemberId(page, size, gameId,
-				game);
+		ListPage listPage = majiangHistoricalPanResultService.findGameHistoricalResultByGameIdAndGame(page, size,
+				gameId, game);
 		vo.setSuccess(true);
 		vo.setMsg("historical result");
 		vo.setData(listPage);
@@ -293,6 +299,27 @@ public class MemberHistoricalResultController {
 		vo.setMsg("playback");
 		vo.setData(data);
 		return vo;
+	}
+
+	/**
+	 * 每日游戏数据生成
+	 */
+	@Scheduled(cron = "0 0 2 * * ?") // 每天凌晨2点
+	@RequestMapping(value = "/creategamedatareport")
+	private void createGameDataReport() {
+		Game[] games = Game.values();
+		long oneDay = 3600000 * 24;
+		// 当日凌晨2点
+		long endTime = System.currentTimeMillis();
+		// 昨日凌晨2点
+		long startTime = endTime - oneDay;
+		for (Game game : games) {
+			int currentMember = 0;// 进入游戏的当日会员人数
+			int gameNum = majiangHistoricalResultService.countGameNumByGameAndTime(game, startTime, endTime);// 游戏总局数
+			int loginMember = 0;// 独立玩家
+			GameDataReportVO report = new GameDataReportVO(game, endTime, currentMember, gameNum, loginMember);
+			gameDataReportMsgService.recordGameDataReport(report);
+		}
 	}
 
 }

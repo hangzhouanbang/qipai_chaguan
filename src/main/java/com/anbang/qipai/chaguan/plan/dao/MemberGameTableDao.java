@@ -22,4 +22,6 @@ public interface MemberGameTableDao {
 	void removeExpireRoom(Game game, String serverGameId);
 
 	List<MemberGameTable> findMemberGameTableByMemberId(String memberId);
+
+	void updateMemberGameTableCurrentPanNum(Game game, String serverGameId, List<String> playerIds, int no);
 }

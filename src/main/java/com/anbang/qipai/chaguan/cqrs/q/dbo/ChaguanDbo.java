@@ -15,6 +15,15 @@ public class ChaguanDbo {
 	private String desc;// 茶馆描述
 	private int memberNum;// 玩家人数
 	private String status;// 茶馆状态
+	private long createTime;// 创建时间
+
+	public long getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(long createTime) {
+		this.createTime = createTime;
+	}
 
 	public String getId() {
 		return id;

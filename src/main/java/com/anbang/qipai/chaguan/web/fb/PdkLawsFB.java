@@ -21,6 +21,8 @@ public class PdkLawsFB {
 				panshu = "10";
 			} else if (lawName.equals("esj")) {// 20局
 				panshu = "20";
+			} else if (lawName.equals("yj")) {// 1局
+				panshu = "1";
 			} else if (lawName.equals("er")) {// 二人
 				renshu = "2";
 			} else if (lawName.equals("sr")) {// 三人

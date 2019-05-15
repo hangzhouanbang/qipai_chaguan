@@ -1,53 +1,49 @@
-package com.anbang.qipai.chaguan.plan.bean.game;
+package com.anbang.qipai.chaguan.msg.msjobs;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class GameTable {
+import com.anbang.qipai.chaguan.plan.bean.game.Game;
+import com.anbang.qipai.chaguan.plan.bean.game.GameLaw;
+import com.anbang.qipai.chaguan.plan.bean.game.GameTable;
+import com.anbang.qipai.chaguan.plan.bean.game.ServerGame;
+
+public class GameTableMO {
 	private String id;
 	private String no;// 房间6位编号,可循环使用
 	private String chaguanId;// 茶馆id
 	private Game game;
 	private List<GameLaw> laws;
 	private int playersCount;
+	private int currentPanNo;
 	private int panCountPerJu;
-	private int currentPanNum;
 	private ServerGame serverGame;
+	private List<String> playerList;
 	private long createTime;
-	private long deadlineTime;
 	private String state;// 状态
 
-	public boolean validateLaws() {
-		if (laws != null) {
-			Set<String> groupIdSet = new HashSet<>();
-			for (GameLaw law : laws) {
-				String groupId = law.getMutexGroupId();
-				if (groupId != null) {
-					// contain this element,return false
-					if (!groupIdSet.add(groupId)) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
+	public GameTableMO() {
+
 	}
 
-	public int getCurrentPanNum() {
-		return currentPanNum;
+	public GameTableMO(GameTable gameTable) {
+		id = gameTable.getId();
+		no = gameTable.getNo();
+		chaguanId = gameTable.getChaguanId();
+		game = gameTable.getGame();
+		laws = gameTable.getLaws();
+		playersCount = gameTable.getPlayersCount();
+		panCountPerJu = gameTable.getPanCountPerJu();
+		serverGame = gameTable.getServerGame();
+		createTime = gameTable.getCreateTime();
+		state = gameTable.getState();
 	}
 
-	public void setCurrentPanNum(int currentPanNum) {
-		this.currentPanNum = currentPanNum;
+	public int getCurrentPanNo() {
+		return currentPanNo;
 	}
 
-	public long getDeadlineTime() {
-		return deadlineTime;
-	}
-
-	public void setDeadlineTime(long deadlineTime) {
-		this.deadlineTime = deadlineTime;
+	public void setCurrentPanNo(int currentPanNo) {
+		this.currentPanNo = currentPanNo;
 	}
 
 	public String getId() {
@@ -64,6 +60,14 @@ public class GameTable {
 
 	public void setNo(String no) {
 		this.no = no;
+	}
+
+	public String getChaguanId() {
+		return chaguanId;
+	}
+
+	public void setChaguanId(String chaguanId) {
+		this.chaguanId = chaguanId;
 	}
 
 	public Game getGame() {
@@ -106,20 +110,20 @@ public class GameTable {
 		this.serverGame = serverGame;
 	}
 
+	public List<String> getPlayerList() {
+		return playerList;
+	}
+
+	public void setPlayerList(List<String> playerList) {
+		this.playerList = playerList;
+	}
+
 	public long getCreateTime() {
 		return createTime;
 	}
 
 	public void setCreateTime(long createTime) {
 		this.createTime = createTime;
-	}
-
-	public String getChaguanId() {
-		return chaguanId;
-	}
-
-	public void setChaguanId(String chaguanId) {
-		this.chaguanId = chaguanId;
 	}
 
 	public String getState() {

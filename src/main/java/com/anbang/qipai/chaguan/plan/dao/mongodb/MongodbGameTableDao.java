@@ -85,4 +85,24 @@ public class MongodbGameTableDao implements GameTableDao {
 		return mongoTemplate.find(query, GameTable.class);
 	}
 
+	@Override
+	public void updateGameTableDeadlineTime(Game game, String serverGameId, long deadlineTime) {
+		Query query = new Query();
+		query.addCriteria(
+				Criteria.where("game").is(game).andOperator(Criteria.where("serverGame.gameId").is(serverGameId)));
+		Update update = new Update();
+		update.set("deadlineTime", deadlineTime);
+		mongoTemplate.updateFirst(query, update, GameTable.class);
+	}
+
+	@Override
+	public void updateGameTableCurrentPanNum(Game game, String serverGameId, int no) {
+		Query query = new Query();
+		query.addCriteria(
+				Criteria.where("game").is(game).andOperator(Criteria.where("serverGame.gameId").is(serverGameId)));
+		Update update = new Update();
+		update.set("currentPanNum", no);
+		mongoTemplate.updateFirst(query, update, GameTable.class);
+	}
+
 }
